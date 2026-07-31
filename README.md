@@ -4,6 +4,8 @@
 
 **版本**：0.1.1 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
+[English](README.en.md)
+
 ---
 
 ## 特性
