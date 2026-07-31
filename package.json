@@ -1,0 +1,19 @@
+{
+  "name": "ai-werewolf",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev:server": "npm run dev -w packages/server",
+    "dev:client": "npm run dev -w packages/client",
+    "build:shared": "npm run build -w packages/shared",
+    "build:server": "npm run build -w packages/server",
+    "build:client": "npm run build -w packages/client",
+    "db:init": "npm run db:init -w packages/server",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}

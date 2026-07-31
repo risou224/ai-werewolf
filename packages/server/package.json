@@ -1,0 +1,27 @@
+{
+  "name": "@ai-werewolf/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:init": "tsx src/db/init.ts"
+  },
+  "dependencies": {
+    "@ai-werewolf/shared": "*",
+    "@fastify/cors": "^10.0.0",
+    "dotenv": "^16.4.0",
+    "fastify": "^5.0.0",
+    "nanoid": "^5.0.0",
+    "node-fetch": "^3.3.0",
+    "socket.io": "^4.8.0",
+    "sql.js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.0",
+    "tsx": "^4.19.0",
+    "vitest": "^4.1.10"
+  }
+}

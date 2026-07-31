@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+*.db
+*.log
+*.tsbuildinfo
+.obsidian/
+.workbuddy/
+.hermes/
+obj\[c\]
+packages/server/data/
