@@ -8,6 +8,14 @@
 
 ---
 
+## Why This Project
+
+I saw AI Werewolf battles on Bilibili and thought they were great fun. Being able to freely choose the models and customize the rules would make it even better.
+
+There was no ready-made software out there, so I built my own and open-sourced it for everyone.
+
+Have fun!
+
 ## Features
 
 - Bind a different AI model to each seat — one API config (endpoint + key) can host multiple models, with pull/select management and one-click random assignment
