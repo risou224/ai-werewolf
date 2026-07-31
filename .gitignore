@@ -9,3 +9,9 @@ dist/
 .hermes/
 obj\[c\]
 packages/server/data/
+
+# 打包工具（不进仓库，仅本地发布用）
+dist-pkg/
+pkg.config.json
+scripts/
+打包成品/
