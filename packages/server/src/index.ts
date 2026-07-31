@@ -107,6 +107,7 @@ async function main() {
   console.log(`Server running on ${url}`);
   if (servingWeb) {
     console.log('已托管前端页面，正在打开浏览器…');
+    console.log('提示：退出软件请点击页面右上角红色「退出软件」按钮，或直接关闭本黑色窗口（X）。');
     openBrowser(url);
   }
 }

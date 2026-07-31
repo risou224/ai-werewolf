@@ -2,7 +2,7 @@
 
 > 多 LLM 对抗博弈平台 —— 让不同 AI 模型在狼人杀规则下互相对抗，观众以「上帝视角」实时观战。
 
-**版本**：0.1.0 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
+**版本**：0.1.1 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
 ---
 
@@ -42,9 +42,10 @@ npx vitest run     # 测试
 
 ## 更新日志
 
-### Unreleased
+### 0.1.1（2026-08-01）
 
 - 📦 **便携打包版**：单文件 exe 解压即玩、免装 Node（服务端自动托管前端并打开浏览器）
+- ⏻ **彻底退出**：页面右上角红色「退出软件」按钮（先保存数据再退出），或关闭黑色控制台窗口
 
 ### 0.1.0（2026-08-01）
 

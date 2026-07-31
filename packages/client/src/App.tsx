@@ -42,6 +42,29 @@ const App: React.FC = () => {
             </NavLink>
           );
         })}
+
+        {/* 退出软件（打包版用）：先保存数据库再退出 */}
+        <div className="ml-auto flex items-center gap-2">
+          <span className="text-[10px] text-gray-500 hidden md:inline">
+            退出：右上角红钮，或关闭黑色控制台窗口
+          </span>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!window.confirm('确定退出软件吗？对局数据会先保存再退出。')) return;
+              try {
+                const res = await fetch('/api/admin/shutdown', { method: 'POST' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                alert('已保存数据并退出，可关闭本页面。');
+              } catch {
+                alert('退出指令发送失败，可直接关闭黑色控制台窗口退出。');
+              }
+            }}
+            className="px-3 py-1.5 rounded-md text-xs font-bold bg-red-600 hover:bg-red-500 text-white transition-colors"
+          >
+            ⏻ 退出软件
+          </button>
+        </div>
       </nav>
 
       {/* 主内容 */}

@@ -422,4 +422,19 @@ export function registerAdminRoutes(app: FastifyInstance, io: SocketServer): voi
     status: 'ok',
     timestamp: new Date().toISOString(),
   }));
+
+  // ============ 彻底退出（仅本机） ============
+  // 打包版使用：点击页面右上角「退出软件」按钮时调用，
+  // 先保存数据库再退出进程，避免直接关黑框丢数据。
+  app.post('/api/admin/shutdown', async (req, reply) => {
+    const ip = req.ip;
+    const isLocal = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+    if (!isLocal) {
+      return reply.code(403).send({ ok: false, error: '仅允许本机操作' });
+    }
+    saveDb();
+    reply.send({ ok: true });
+    console.log('收到退出指令，数据库已保存，2 秒后退出…');
+    setTimeout(() => process.exit(0), 500);
+  });
 }
