@@ -52,6 +52,8 @@ Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `
 
 ## Changelog
 
+> Only the latest 3 versions are shown here. Full history: [CHANGELOG.md](CHANGELOG.md)
+
 ### 0.1.2 (2026-08-01)
 
 - 🎮 **Game control fixes**: pause/resume/stop now truly work (pause freezes instantly, resume resumes correctly, stop halts immediately), aborts in-flight AI calls on stop, frontend shows a "game terminated" toast
@@ -73,8 +75,6 @@ Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `
 - 👁️ Admin console + spectator stand: god's-eye live view, game replays
 - 🧩 Board presets & custom roles (6/9/12 players, total-kill / faction-kill / no-sheriff variants)
 - 🔌 Compatible with any OpenAI-format API (Ollama etc., key optional)
-
-Full changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Disclaimer
 
