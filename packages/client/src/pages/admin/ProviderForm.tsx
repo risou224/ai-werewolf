@@ -165,9 +165,9 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
   const existingCount = candidates.filter(c => c.existing).length;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg p-6 w-[34rem] space-y-4 max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-bold">{isEdit ? '编辑 API 配置' : '添加 API 配置'}</h3>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[34rem] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
+        <h3 className="text-lg font-bold gold-text">{isEdit ? '编辑 API 配置' : '添加 API 配置'}</h3>
         <p className="text-xs text-gray-500">
           一个 API 配置 = 一个地址 + 一个 Key，下面可以挂多个模型。勾选 = 挂载，取消勾选已挂载的模型 = 移除。
         </p>
@@ -175,7 +175,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
         <div>
           <label className="block text-sm text-gray-400 mb-1">API 名称</label>
           <input
-            className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+            className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             placeholder="如 DeepSeek 官方 / 小米 MiMo"
@@ -186,7 +186,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
         <div>
           <label className="block text-sm text-gray-400 mb-1">API 地址</label>
           <input
-            className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+            className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
             value={form.endpoint}
             onChange={e => { setForm({ ...form, endpoint: e.target.value }); setTestStatus('idle'); setFetched(false); }}
             placeholder="https://api.deepseek.com/v1 或 https://your-domain.com/api/v1"
@@ -200,7 +200,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
         <div>
           <label className="block text-sm text-gray-400 mb-1">API Key</label>
           <input
-            className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+            className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
             type="password"
             value={form.apiKey}
             onChange={e => setForm({ ...form, apiKey: e.target.value })}
@@ -214,7 +214,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
             type="button"
             onClick={handleTestConnection}
             disabled={!form.endpoint || testStatus === 'testing'}
-            className="flex-1 px-3 py-2 bg-gray-700 rounded text-sm hover:bg-gray-600 disabled:opacity-50 transition-colors"
+            className="flex-1 px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-sm hover:bg-white/10 disabled:opacity-50 transition-colors"
           >
             {testStatus === 'testing' ? '测试中...' : '🔌 测试连接'}
           </button>
@@ -222,7 +222,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
             type="button"
             onClick={handleFetchModels}
             disabled={!form.endpoint || fetchingModels}
-            className="flex-1 px-3 py-2 bg-gray-700 rounded text-sm hover:bg-gray-600 disabled:opacity-50 transition-colors"
+            className="flex-1 px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-sm hover:bg-white/10 disabled:opacity-50 transition-colors"
           >
             {fetchingModels ? '拉取中...' : '📋 拉取模型'}
           </button>
@@ -260,9 +260,9 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
                 </button>
               </div>
             </div>
-            <div className="max-h-52 overflow-y-auto bg-gray-900 rounded p-2 space-y-1">
-              {candidates.map(c => (
-                <label key={c.modelId} className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-700 cursor-pointer">
+            <div className="max-h-52 overflow-y-auto bg-white/[0.03] border border-white/10 rounded p-2 space-y-1">
+                          {candidates.map(c => (
+                            <label key={c.modelId} className="flex items-center gap-2 px-2 py-1 rounded hover:bg-white/[0.06] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={checked.has(c.modelId)}

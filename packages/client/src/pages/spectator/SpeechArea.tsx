@@ -12,7 +12,7 @@ export const SpeechArea: React.FC = () => {
   const [speeches] = useState<SpeechItem[]>([]);
 
   return (
-    <div className="w-full max-w-lg bg-gray-900 rounded-lg p-4">
+    <div className="w-full max-w-lg glass-card rounded-card p-4">
       <h3 className="text-sm font-bold text-gray-400 mb-3">发言区</h3>
       <div className="max-h-48 overflow-y-auto">
         {speeches.length === 0 && (

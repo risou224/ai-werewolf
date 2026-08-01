@@ -42,28 +42,34 @@ const GameControls: React.FC<{ status: string }> = ({ status }) => {
   );
 };
 
-/** 阶段进度指示器 — 显示当前在哪个阶段 */
+/** 阶段进度指示器 — 游戏化时间轴（夜晚→天亮→竞选→白天→结算） */
 const PhaseProgress: React.FC<{ phase: string }> = ({ phase }) => {
   const steps = [
-    { key: 'night', label: '夜晚', icon: '🌙', phases: ['night_wolf', 'night_seer', 'night_witch', 'night_settle'] },
-    { key: 'dawn', label: '天亮', icon: '🌅', phases: ['dawn', 'last_words'] },
-    { key: 'sheriff', label: '竞选', icon: '👑', phases: ['sheriff_election', 'sheriff_speech', 'sheriff_vote'] },
-    { key: 'day', label: '白天', icon: '☀️', phases: ['day_speech', 'day_vote', 'day_settle'] },
-    { key: 'end', label: '结算', icon: '🏆', phases: ['hunter_shot', 'sheriff_transfer', 'game_over'] },
+    { key: 'night', label: '夜晚', phases: ['night_wolf', 'night_seer', 'night_witch', 'night_settle'] },
+    { key: 'dawn', label: '天亮', phases: ['dawn', 'last_words'] },
+    { key: 'sheriff', label: '竞选', phases: ['sheriff_election', 'sheriff_speech', 'sheriff_vote'] },
+    { key: 'day', label: '白天', phases: ['day_speech', 'day_vote', 'day_settle'] },
+    { key: 'end', label: '结算', phases: ['hunter_shot', 'sheriff_transfer', 'game_over'] },
   ];
 
   const activeStep = steps.findIndex(s => s.phases.includes(phase));
 
   return (
-    <div className="flex items-center gap-1 px-3 py-1.5 bg-gray-900/60 rounded-lg border border-gray-800">
+    <div className="flex items-center gap-1 px-3 py-1.5 glass-card rounded-badge">
       {steps.map((s, i) => (
         <React.Fragment key={s.key}>
-          <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] transition-colors
-            ${i === activeStep ? 'bg-amber-600/30 text-amber-400 font-bold' : 'text-gray-600'}`}>
-            <span>{s.icon}</span>
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-badge text-[11px] transition-all duration-300
+            ${i === activeStep
+              ? 'bg-gradient-to-r from-gold-500/30 to-gold-400/10 text-gold-300 font-bold shadow-gold-glow ring-1 ring-gold-400/40'
+              : i < activeStep
+                ? 'text-gray-400'
+                : 'text-gray-600'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${i <= activeStep ? 'bg-gold-400' : 'bg-gray-700'}`} />
             <span>{s.label}</span>
           </div>
-          {i < steps.length - 1 && <span className="text-gray-700 text-[10px]">→</span>}
+          {i < steps.length - 1 && (
+            <span className={`text-[10px] ${i < activeStep ? 'text-gold-500/60' : 'text-gray-700'}`}>→</span>
+          )}
         </React.Fragment>
       ))}
     </div>
@@ -165,7 +171,7 @@ export const SpectatorView: React.FC = () => {
   }
 
   const nightPhase = ['night_wolf', 'night_seer', 'night_witch', 'night_settle'].includes(gameState.phase as string);
-  const centerLabel = nightPhase ? '🌙 天黑请闭眼' : '☀️ 白天';
+  const centerLabel = nightPhase ? '天黑请闭眼' : '天亮了';
 
   const getPlayer = (seat: number) =>
     gameState.players.find((p: any) => p.seatNumber === seat) || null;
@@ -187,8 +193,8 @@ export const SpectatorView: React.FC = () => {
             onClick={() => setGodMode(!godMode)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               godMode
-                ? 'bg-purple-600/80 text-white hover:bg-purple-500'
-                : 'bg-gray-800/80 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                ? 'bg-purple-600/80 text-white hover:bg-purple-500 shadow-[0_0_12px_rgba(147,51,234,0.4)]'
+                : 'bg-white/5 text-gray-400 hover:text-gray-200 hover:bg-white/10 border border-white/10'
             }`}
           >
             {godMode ? '👁️ 上帝视角' : '👤 观众视角'}
@@ -212,6 +218,7 @@ export const SpectatorView: React.FC = () => {
             showRoles={godMode}
             onPlayerClick={handlePlayerClick}
             selectedSeats={selectedSeats}
+            isNight={nightPhase}
           />
         </div>
         <EventLog entries={entries} godMode={godMode} />

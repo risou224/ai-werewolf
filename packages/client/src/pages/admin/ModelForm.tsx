@@ -167,9 +167,9 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
   const isEdit = !!editModel;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg p-6 w-[28rem] space-y-4 max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-bold">{isEdit ? '编辑模型' : '添加模型'}</h3>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[28rem] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
+        <h3 className="text-lg font-bold gold-text">{isEdit ? '编辑模型' : '添加模型'}</h3>
 
         {/* 供应商预设（仅添加模式显示） */}
         {!isEdit && (
@@ -197,7 +197,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
         <div>
           <label className="block text-sm text-gray-400 mb-1">模型名称</label>
           <input
-            className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+            className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             placeholder="如 DeepSeek-V4"
@@ -215,7 +215,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
             <div>
               <label className="block text-sm text-gray-400 mb-1">API 地址</label>
               <input
-                className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+                className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
                 value={form.endpoint}
                 onChange={e => { setForm({ ...form, endpoint: e.target.value }); setTestStatus('idle'); setFetchedModels([]); }}
                 placeholder="https://api.deepseek.com/v1 或 https://your-domain.com/api/v1"
@@ -229,7 +229,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
             <div>
               <label className="block text-sm text-gray-400 mb-1">API Key</label>
               <input
-                className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+                className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
                 type="password"
                 value={form.apiKey}
                 onChange={e => setForm({ ...form, apiKey: e.target.value })}
@@ -243,7 +243,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
                 type="button"
                 onClick={handleTestConnection}
                 disabled={!form.endpoint || testStatus === 'testing'}
-                className="flex-1 px-3 py-2 bg-gray-700 rounded text-sm hover:bg-gray-600 disabled:opacity-50 transition-colors"
+                className="flex-1 px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-sm hover:bg-white/10 disabled:opacity-50 transition-colors"
               >
                 {testStatus === 'testing' ? '测试中...' : '🔌 测试连接'}
               </button>
@@ -251,7 +251,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
                 type="button"
                 onClick={handleFetchModels}
                 disabled={!form.endpoint || fetchingModels}
-                className="flex-1 px-3 py-2 bg-gray-700 rounded text-sm hover:bg-gray-600 disabled:opacity-50 transition-colors"
+                className="flex-1 px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-sm hover:bg-white/10 disabled:opacity-50 transition-colors"
               >
                 {fetchingModels ? '拉取中...' : '📋 拉取模型'}
               </button>
@@ -272,7 +272,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
           <label className="block text-sm text-gray-400 mb-1">模型标识符</label>
           {allModels.length > 0 ? (
             <select
-              className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+              className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
               value={form.modelId}
               onChange={e => handleModelSelect(e.target.value)}
             >
@@ -284,7 +284,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
             </select>
           ) : (
             <input
-              className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm"
+              className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm"
               value={form.modelId}
               onChange={e => setForm({ ...form, modelId: e.target.value })}
               placeholder="deepseek-chat"
@@ -293,7 +293,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
           )}
           {form.modelId === '__manual__' && (
             <input
-              className="w-full px-3 py-2 bg-gray-700 rounded text-white text-sm mt-2"
+              className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white text-sm mt-2"
               value=""
               onChange={e => setForm({ ...form, modelId: e.target.value })}
               placeholder="输入模型标识符"
