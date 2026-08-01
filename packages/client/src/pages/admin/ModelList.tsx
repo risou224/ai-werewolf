@@ -67,7 +67,7 @@ export const ModelList: React.FC = () => {
   const standaloneModels = models.filter(m => !m.provider_id);
 
   const renderModelRow = (model: ModelItem, showProviderHint: boolean) => (
-    <div key={model.id} className="bg-gray-800/80 rounded-lg p-3 flex items-center justify-between">
+    <div key={model.id} className="bg-white/[0.04] rounded-lg p-3 flex items-center justify-between border border-white/10">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-bold text-gray-200 text-sm">{model.name}</span>
@@ -106,7 +106,7 @@ export const ModelList: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold text-gray-200">模型管理</h2>
+        <h2 className="text-lg font-bold gold-text">模型管理</h2>
         <div className="flex gap-2">
           <button
             onClick={() => { setEditingProvider(null); setShowProviderForm(true); }}
@@ -132,7 +132,7 @@ export const ModelList: React.FC = () => {
           <h3 className="text-sm font-bold text-gray-400 mb-3">API 配置</h3>
           <div className="space-y-2">
             {providers.map(provider => (
-              <div key={provider.id} className="bg-gray-900/80 rounded-xl border border-gray-800">
+              <div key={provider.id} className="glass-card rounded-card overflow-hidden">
                 {/* 卡片头部 */}
                 <div className="p-4 flex items-center justify-between">
                   <div className="min-w-0 flex-1">
@@ -144,7 +144,7 @@ export const ModelList: React.FC = () => {
                         ▶
                       </button>
                       <span className="font-bold text-gray-200">{provider.name}</span>
-                      <span className="text-xs text-gray-500 bg-gray-800 rounded-full px-2 py-0.5">
+                      <span className="text-xs text-gray-500 bg-white/[0.06] rounded-full px-2 py-0.5 border border-white/10">
                         {provider.models.length} 个模型
                       </span>
                       {testResults[`p_${provider.id}`] === 'ok' && <span className="text-emerald-400 text-xs">✓ 连通</span>}
@@ -174,7 +174,7 @@ export const ModelList: React.FC = () => {
 
                 {/* 展开后的模型列表 */}
                 {expandedProviders.has(provider.id) && (
-                  <div className="px-4 pb-4 border-t border-gray-800 pt-3">
+                  <div className="px-4 pb-4 border-t border-white/10 pt-3">
                     <div className="space-y-2 mb-3">
                       {provider.models.length === 0 && (
                         <div className="text-gray-600 text-sm py-2">该 API 下还没有模型</div>

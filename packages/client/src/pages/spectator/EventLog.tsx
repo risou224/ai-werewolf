@@ -48,19 +48,19 @@ export const EventLog: React.FC<EventLogProps> = ({ entries, godMode }) => {
   const reversedEntries = useMemo(() => [...entries].reverse(), [entries]);
 
   return (
-    <div className="bg-gray-900/80 rounded-xl border border-gray-800 flex flex-col h-full backdrop-blur min-h-0">
+    <div className="glass-card rounded-card flex flex-col h-full min-h-0">
       <div className="flex items-center justify-between px-4 pt-4 pb-2 shrink-0">
-        <h2 className="text-sm font-bold text-amber-400 tracking-wider">对局日志</h2>
+        <h2 className="text-sm font-bold gold-text tracking-wider">对局日志</h2>
         <div className="flex items-center gap-3">
           {godMode && (
-            <span className="text-[10px] text-purple-400 bg-purple-900/40 px-2 py-0.5 rounded">
+            <span className="text-[10px] text-purple-300 bg-purple-500/15 px-2 py-0.5 rounded-badge ring-1 ring-purple-400/30">
               👁️ 上帝视角
             </span>
           )}
           <button
             onClick={handleExport}
             disabled={entries.length === 0}
-            className="text-xs text-gray-500 hover:text-amber-400 disabled:opacity-30 transition-colors"
+            className="text-xs text-gray-500 hover:text-gold-400 disabled:opacity-30 transition-colors"
           >
             📥 导出
           </button>
@@ -76,19 +76,22 @@ export const EventLog: React.FC<EventLogProps> = ({ entries, godMode }) => {
           const showDetail = expandedId === e.id;
           const isSpeech = e.kind === 'speech';
 
-          /* 发言类条目 — 独立卡片样式 */
+          /* 发言类条目 — 聊天气泡样式 */
           if (isSpeech) {
+            const [speaker, ...contentParts] = e.text.split('：');
+            const content = contentParts.join('：') || '（无内容）';
             return (
-              <div key={e.id} className="bg-gray-800/60 rounded-lg px-3 py-2 border border-gray-700/50">
+              <div key={e.id} className="bg-white/[0.05] rounded-card px-3 py-2.5 border border-white/10
+                hover:border-gold-400/30 transition-colors">
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className="text-gray-600 text-[10px] shrink-0">{e.time}</span>
                   <span className="shrink-0 text-sm">{e.icon}</span>
-                  <span className="text-amber-400 text-xs font-semibold shrink-0">
-                    {e.text.split('：')[0]}
+                  <span className="text-gold-400 text-xs font-semibold shrink-0">
+                    {speaker}
                   </span>
                 </div>
-                <p className="text-xs text-gray-200 leading-relaxed break-words pl-5">
-                  {e.text.split('：').slice(1).join('：') || '（无内容）'}
+                <p className="text-xs text-gray-200 leading-relaxed break-words pl-5 border-l-2 border-gold-500/25 ml-1">
+                  {content}
                 </p>
 
                 {/* godMode 紧凑预览 — 默认可见 */}
@@ -135,7 +138,7 @@ export const EventLog: React.FC<EventLogProps> = ({ entries, godMode }) => {
 
           /* 系统事件 / 错误 — 紧凑行样式 */
           return (
-            <div key={e.id} className={`text-xs py-1.5 border-b border-gray-800/50 last:border-0 ${e.isError ? 'text-red-400' : ''}`}>
+            <div key={e.id} className={`text-xs py-1.5 border-b border-white/5 last:border-0 ${e.isError ? 'text-red-400' : ''}`}>
               <div className="flex items-start gap-1.5">
                 <span className="text-gray-600 shrink-0 w-14">{e.time}</span>
                 <span className="shrink-0">{e.icon}</span>

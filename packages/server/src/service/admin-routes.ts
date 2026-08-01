@@ -383,21 +383,21 @@ export function registerAdminRoutes(app: FastifyInstance, io: SocketServer): voi
 
   app.post('/api/admin/game/pause', async () => {
     for (const [id, g] of activeGames) {
-      g.pause();
+      await g.pause();
     }
     return { ok: true };
   });
 
   app.post('/api/admin/game/resume', async () => {
     for (const [id, g] of activeGames) {
-      g.resume();
+      await g.resume();
     }
     return { ok: true };
   });
 
   app.post('/api/admin/game/stop', async () => {
     for (const [id, g] of activeGames) {
-      g.pause();
+      await g.stop();
     }
     activeGames.clear();
     return { ok: true };

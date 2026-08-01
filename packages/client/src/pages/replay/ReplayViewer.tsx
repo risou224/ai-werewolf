@@ -149,7 +149,7 @@ const ReplayList: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) 
             <div
               key={replay.sessionId}
               onClick={() => onSelect(replay.sessionId)}
-              className="bg-gray-900 rounded-lg p-5 cursor-pointer border border-gray-800 hover:border-yellow-600 transition-colors"
+              className="glass-card rounded-card p-5 cursor-pointer border border-white/10 hover:border-gold-400/40 transition-all hover:-translate-y-0.5"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -287,9 +287,9 @@ const ReplayPlayer: React.FC<{ replayId: string }> = ({ replayId }) => {
   };
 
   return (
-    <div className="bg-werewolf-bg text-white min-h-screen p-4 flex flex-col">
+    <div className="text-white min-h-screen p-4 flex flex-col">
       {/* Controls Bar */}
-      <div className="bg-gray-900 rounded-lg p-3 mb-4 flex items-center gap-4">
+      <div className="glass-card rounded-card p-3 mb-4 flex items-center gap-4">
         <button
           onClick={handlePlayPause}
           className="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-1.5 rounded font-bold text-sm"
@@ -306,7 +306,7 @@ const ReplayPlayer: React.FC<{ replayId: string }> = ({ replayId }) => {
               className={`px-2 py-1 rounded text-xs font-bold ${
                 speed === s
                   ? 'bg-yellow-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  : 'bg-white/[0.06] text-gray-400 hover:bg-white/10 border border-white/10'
               }`}
             >
               {s}x
@@ -323,7 +323,7 @@ const ReplayPlayer: React.FC<{ replayId: string }> = ({ replayId }) => {
 
       {/* Progress Bar */}
       <div
-        className="bg-gray-800 rounded-full h-2 mb-4 cursor-pointer relative overflow-hidden"
+        className="bg-white/[0.06] border border-white/10 rounded-full h-2 mb-4 cursor-pointer relative overflow-hidden"
         onClick={handleSeek}
       >
         <div

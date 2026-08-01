@@ -238,13 +238,34 @@ export const GameConfigPanel: React.FC = () => {
     }
   };
 
-  if (gameStatus === 'running') {
+  if (gameStatus === 'running' || gameStatus === 'paused') {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🎮</div>
-        <h2 className="text-xl font-bold mb-2">游戏进行中</h2>
+        <h2 className="text-xl font-bold mb-2">{gameStatus === 'paused' ? '游戏已暂停' : '游戏进行中'}</h2>
         <p className="text-gray-400 mb-4">对局 ID: {sessionId}</p>
         <div className="flex justify-center gap-4">
+          {gameStatus === 'running' ? (
+            <button
+              onClick={async () => {
+                await fetch('/api/admin/game/pause', { method: 'POST' });
+                setGameStatus('paused');
+              }}
+              className="px-6 py-3 bg-yellow-600 rounded-lg hover:bg-yellow-500"
+            >
+              ⏸ 暂停
+            </button>
+          ) : (
+            <button
+              onClick={async () => {
+                await fetch('/api/admin/game/resume', { method: 'POST' });
+                setGameStatus('running');
+              }}
+              className="px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500"
+            >
+              ▶ 恢复
+            </button>
+          )}
           <button
             onClick={() => navigate('/')}
             className="px-6 py-3 bg-amber-600 rounded-lg hover:bg-amber-500"
@@ -274,10 +295,10 @@ export const GameConfigPanel: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6">游戏配置</h2>
+      <h2 className="text-xl font-bold gold-text mb-6">游戏配置</h2>
 
       {/* 板子选择 */}
-      <div className="bg-gray-800 rounded-lg p-4 mb-6 space-y-4">
+      <div className="glass-card rounded-card p-4 mb-6 space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <h3 className="text-sm text-gray-400">选择板子</h3>
           <button
@@ -294,7 +315,7 @@ export const GameConfigPanel: React.FC = () => {
               <div className="flex-1">
                 <label className="text-sm text-gray-400 block mb-1">配置名称</label>
                 <input
-                  className="w-full px-3 py-2 bg-gray-700 rounded text-white"
+                  className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white"
                   value={configName}
                   onChange={e => setConfigName(e.target.value)}
                 />
@@ -302,7 +323,7 @@ export const GameConfigPanel: React.FC = () => {
               <div className="w-48">
                 <label className="text-sm text-gray-400 block mb-1">板子</label>
                 <select
-                  className="w-full px-3 py-2 bg-gray-700 rounded text-white"
+                  className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white"
                   value={selectedBoardId}
                   onChange={e => setSelectedBoardId(e.target.value)}
                 >
@@ -328,7 +349,7 @@ export const GameConfigPanel: React.FC = () => {
                   {Object.entries(roleCounts).map(([type, count]) => {
                     const def = roleDefs.find(d => d.type === type);
                     return (
-                      <span key={type} className="px-2 py-1 bg-gray-700 rounded">
+                      <span key={type} className="px-2 py-1 bg-white/[0.06] border border-white/10 rounded">
                         {def?.name || type} × {count}
                       </span>
                     );
@@ -336,14 +357,14 @@ export const GameConfigPanel: React.FC = () => {
                 </div>
                 {/* 规则标签 */}
                 <div className="text-[10px] text-gray-500 flex gap-1.5 flex-wrap">
-                  <span className="px-1.5 py-0.5 bg-gray-700/50 rounded">
+                  <span className="px-1.5 py-0.5 bg-white/[0.05] border border-white/5 rounded">
                     {currentBoard.rules?.winCondition === 'slaughter_side' ? '屠边' : '屠城'}
                   </span>
-                  <span className="px-1.5 py-0.5 bg-gray-700/50 rounded">
+                  <span className="px-1.5 py-0.5 bg-white/[0.05] border border-white/5 rounded">
                     {currentBoard.rules?.sheriffEnabled === false ? '无警长' : '有警长'}
                   </span>
                   {currentBoard.rules?.firstNightWitchPoison === false && (
-                    <span className="px-1.5 py-0.5 bg-gray-700/50 rounded">首夜禁毒</span>
+                    <span className="px-1.5 py-0.5 bg-white/[0.05] border border-white/5 rounded">首夜禁毒</span>
                   )}
                 </div>
               </>
@@ -356,7 +377,7 @@ export const GameConfigPanel: React.FC = () => {
             <div>
               <label className="text-sm text-gray-400 block mb-1">板子名称</label>
               <input
-                className="w-full px-3 py-2 bg-gray-700 rounded text-white"
+                className="w-full px-3 py-2 bg-white/[0.06] border border-white/10 rounded text-white"
                 placeholder="例：自定义8人局"
                 value={configName}
                 onChange={e => setConfigName(e.target.value)}
@@ -366,7 +387,7 @@ export const GameConfigPanel: React.FC = () => {
               <label className="text-sm text-gray-400 block mb-2">
                 当前角色 ({customRoles.length} 人)
               </label>
-              <div className="flex gap-1 flex-wrap mb-2 min-h-[40px] p-2 bg-gray-900 rounded">
+              <div className="flex gap-1 flex-wrap mb-2 min-h-[40px] p-2 bg-white/[0.03] border border-white/10 rounded">
                 {customRoles.length === 0 && (
                   <span className="text-xs text-gray-500 py-2 px-1">点击下方按钮添加角色</span>
                 )}
@@ -376,7 +397,7 @@ export const GameConfigPanel: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => handleRemoveRole(idx)}
-                      className="text-xs px-2 py-1 bg-gray-700 hover:bg-red-700 rounded text-white"
+                      className="text-xs px-2 py-1 bg-white/[0.06] hover:bg-wolfred-500/30 border border-white/10 rounded text-white"
                       title="点击移除"
                     >
                       {def?.name || role} ×
@@ -391,10 +412,10 @@ export const GameConfigPanel: React.FC = () => {
                     <button
                       key={roleType}
                       onClick={() => handleAddRole(roleType)}
-                      className={`text-xs px-2 py-1 rounded ${
+                      className={`text-xs px-2 py-1 rounded border border-white/10 ${
                         def?.camp === 'evil'
-                          ? 'bg-red-900 hover:bg-red-700 text-red-200'
-                          : 'bg-blue-900 hover:bg-blue-700 text-blue-200'
+                          ? 'bg-wolfred-500/20 hover:bg-wolfred-500/40 text-wolfred-400'
+                          : 'bg-purple-500/15 hover:bg-purple-500/35 text-purple-300'
                       }`}
                     >
                       + {def?.name || roleType}
@@ -427,14 +448,14 @@ export const GameConfigPanel: React.FC = () => {
           🎲 随机分配模型
         </button>
       </div>
-      <div className="bg-gray-800 rounded-lg p-4 mb-6">
+      <div className="glass-card rounded-card p-4 mb-6">
         <div className="grid grid-cols-3 gap-3">
           {seats.slice(0, customRoles.length || totalPlayers).map((seat, i) => (
-            <div key={seat.seatNumber} className="bg-gray-700 rounded p-3">
+            <div key={seat.seatNumber} className="bg-white/[0.04] border border-white/10 rounded-card p-3">
               <div className="text-sm text-yellow-400 font-bold mb-2">{seat.seatNumber}号座位</div>
               <div className="space-y-2">
                 <select
-                  className="w-full px-2 py-1 bg-gray-600 rounded text-sm text-white"
+                  className="w-full px-2 py-1 bg-white/[0.06] border border-white/10 rounded text-sm text-white"
                   value={seat.modelConfigId}
                   onChange={e => handleModelChange(i, e.target.value)}
                 >
@@ -457,7 +478,7 @@ export const GameConfigPanel: React.FC = () => {
                   )}
                 </select>
                 <input
-                  className="w-full px-2 py-1 bg-gray-600 rounded text-sm text-white"
+                  className="w-full px-2 py-1 bg-white/[0.06] border border-white/10 rounded text-sm text-white"
                   placeholder="人格标签（可选）"
                   value={seat.modelInstanceLabel}
                   onChange={e => handleLabelChange(i, e.target.value)}
