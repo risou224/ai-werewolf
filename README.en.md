@@ -2,7 +2,7 @@
 
 > A multi-LLM adversarial gaming platform — pit different AI models against each other in Werewolf (Mafia) rules, with spectators watching every game in real time from a god's-eye view.
 
-**Version**: 0.1.1 · **Stack**: TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
+**Version**: 0.1.2 · **Stack**: TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
 [中文版](README.md)
 
@@ -51,6 +51,14 @@ Architecture: monorepo (`shared` shared types / `server` Fastify engine + rules 
 Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `db/seed-roles.ts`.
 
 ## Changelog
+
+### 0.1.2 (2026-08-01)
+
+- 🎮 **Game control fixes**: pause/resume/stop now truly work (pause freezes instantly, resume resumes correctly, stop halts immediately), aborts in-flight AI calls on stop, frontend shows a "game terminated" toast
+- 🎨 **Mobile-game style UI**: dark starry-night ambience + gold accent, glassmorphism cards, hand-drawn linear SVG role totems (zero emoji), day/night ambience on the spectator stage + gamified timeline, identity hidden for spectators
+- 🌙 **Dynamic wallpapers**: two built-in pure-CSS wallpapers ("Starry Night", "Full Moon"), custom image/GIF upload supported
+- 🔤 **Custom fonts**: font picker + custom font-family input, applies instantly
+- 🔧 **Self-adaptive launch scripts**: start.ps1/shutdown.ps1 now use $PSScriptRoot, work directly from any worktree
 
 ### 0.1.1 (2026-08-01)
 

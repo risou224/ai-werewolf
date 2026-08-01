@@ -2,7 +2,7 @@
 
 > 多 LLM 对抗博弈平台 —— 让不同 AI 模型在狼人杀规则下互相对抗，观众以「上帝视角」实时观战。
 
-**版本**：0.1.1 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
+**版本**：0.1.2 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
 [English](README.en.md)
 
@@ -51,6 +51,14 @@ npx vitest run     # 测试
 加角色：`server/src/engine/roles.ts` + `handlers/`；加板子：后台自定义或 `db/seed-roles.ts`。
 
 ## 更新日志
+
+### 0.1.2（2026-08-01）
+
+- 🎮 **对局控制修复**：暂停/恢复/终止真正生效（暂停立即冻结、恢复正确续跑、终止立即停死），终止时掐断进行中的 AI 请求，终止后前端弹出「对局已终止」提示
+- 🎨 **UI 手游化美化**：暗夜星月氛围 + 金色主视觉，玻璃质感卡片，角色身份改手绘线性 SVG 图腾（零 emoji），观战台昼夜氛围切换 + 游戏化时间轴，观众视角身份隐藏
+- 🌙 **动态壁纸**：内置「星夜」「月圆之夜」两套纯 CSS 壁纸，支持自定义上传图片/gif
+- 🔤 **自定义字体**：界面字体选择 + 自定义 font-family 输入，即时生效
+- 🔧 **启动脚本路径自适应**：start.ps1/shutdown.ps1 改用 $PSScriptRoot，worktree 多版本开发可直接启动
 
 ### 0.1.1（2026-08-01）
 
