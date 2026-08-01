@@ -1,6 +1,6 @@
 ﻿param()
 
-$projectPath = "c:\Users\54860\Desktop\ai狼人杀聚合"
+$projectPath = $PSScriptRoot
 $logDir = Join-Path $projectPath "logs"
 if (!(Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 

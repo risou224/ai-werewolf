@@ -6,6 +6,17 @@
   color-scheme: dark;
 }
 
+/* ── 原生下拉选项：暗色主题下 option 会继承 select 的白色文字，
+   在系统浅色渲染的弹出列表里白底白字不可读，强制浅底深字 ── */
+select option {
+  background-color: #ffffff;
+  color: #1e2233;
+}
+select optgroup {
+  background-color: #f1f1f5;
+  color: #4b5563;
+}
+
 html {
   height: 100%;
 }

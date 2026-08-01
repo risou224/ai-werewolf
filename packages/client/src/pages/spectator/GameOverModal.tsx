@@ -105,7 +105,28 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({ gameState, entries
     return pickMVP(players, winner, entries, (gameState as any).mvp);
   }, [winner, players, entries, gameState]);
 
-  if (!winner) return null;
+  // 对局被管理员终止（无胜负结果）
+  if (!winner) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
+        <div className="w-[420px] max-h-[90vh] rounded-2xl border border-white/15 overflow-y-auto animate-pop-in relative
+          bg-night-900/95 backdrop-blur-xl shadow-card-glow p-8 text-center"
+        >
+          <div className="text-5xl mb-4">⏹️</div>
+          <h2 className="text-xl font-bold mb-2 text-gray-100">对局已终止</h2>
+          <p className="text-gray-400 text-sm mb-6">本局游戏已被管理员终止，未分出胜负。</p>
+          <button
+            onClick={() => window.open('/admin', '_blank')}
+            className="px-6 py-2.5 rounded-lg text-sm font-medium transition-all
+              bg-gradient-to-r from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400
+              text-night-950 shadow-gold-glow"
+          >
+            ⚙️ 返回游戏配置
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const wolfWin = winner === 'evil';
   const winnerLabel = wolfWin ? '狼人阵营获胜！' : '好人阵营获胜！';

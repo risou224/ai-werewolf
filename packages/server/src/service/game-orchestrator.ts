@@ -17,6 +17,14 @@ import path from 'path';
 const promptEngine = new PromptEngine();
 const contextAssembler = new ContextAssembler();
 
+/** 对局被终止时抛出，用于中断正在执行的 handler */
+export class GameStoppedError extends Error {
+  constructor() {
+    super('对局已终止');
+    this.name = 'GameStoppedError';
+  }
+}
+
 interface PlayerModelInfo {
   seatNumber: number;
   systemPrompt: string;
@@ -31,6 +39,9 @@ export class GameOrchestrator {
   private io: SocketServer;
   private events: GameEvent[] = [];
   private _isRunning = false;
+  private _paused = false;
+  private _stopped = false;
+  private abortController = new AbortController();
   private modelClients: Map<number, PlayerModelInfo> = new Map();
   private cachedConfig: Record<string, any> | null = null;
   private sheriffEnabled = true;
@@ -64,13 +75,24 @@ export class GameOrchestrator {
   async start(): Promise<void> {
     await this.loadModelClients();
 
+    this._paused = false;
+    this._stopped = false;
+    this.abortController = new AbortController();
     this._isRunning = true;
     this.session.status = 'running';
     this.broadcastState();
 
-    while (this._isRunning) {
+    while (this._isRunning && !this._stopped) {
           // 清除上一轮的错误
           this.recentErrors = [];
+
+          // 阶段边界：暂停时在此等待（不推进阶段），终止时退出
+          try {
+            await this.waitWhilePaused();
+          } catch (err) {
+            if (err instanceof GameStoppedError) break;
+            throw err;
+          }
 
           const victory = checkVictory(this.session.players, this.winCondition);
           if (victory.gameOver) {
@@ -98,7 +120,7 @@ export class GameOrchestrator {
                 { role: 'system' as const, content: info.systemPrompt },
                 { role: 'user' as const, content: votePrompt },
               ];
-              const response = await info.client.chat(messages);
+              const response = await info.client.chat(messages, this.abortController.signal);
               const text = response.public_ || response.thinking || '';
               const seatMatch = text.match(/(\d+)\s*号/);
               const seat = seatMatch ? parseInt(seatMatch[1], 10) : null;
@@ -190,6 +212,10 @@ export class GameOrchestrator {
         try {
           await handler.execute(this.createContext());
         } catch (err) {
+          if (err instanceof GameStoppedError) {
+            console.log('[Orchestrator] 对局已终止，退出主循环');
+            break;
+          }
           console.error(`[Orchestrator] Handler ${nextPhase} 执行出错:`, err);
           // 出错时短暂等待后继续，避免卡死
           await new Promise(r => setTimeout(r, 2000));
@@ -204,17 +230,50 @@ export class GameOrchestrator {
     }
   }
 
-  pause(): void {
-    this._isRunning = false;
+  async pause(): Promise<void> {
+    this._paused = true;
     this.session.status = 'paused';
     this.broadcastState();
+    await this.persistStatus();
   }
 
-  resume(): void {
-    this._isRunning = true;
+  async resume(): Promise<void> {
+    this._paused = false;
     this.session.status = 'running';
     this.broadcastState();
-    this.start().catch(console.error);
+    await this.persistStatus();
+  }
+
+  async stop(): Promise<void> {
+    this._stopped = true;
+    this._paused = false;
+    this.abortController.abort();
+    this.session.status = 'finished';
+    this.session.endTime = new Date().toISOString();
+    this.broadcastState();
+    await this.persistStatus();
+  }
+
+  /** 同步状态到 DB，保证 /api/admin/game/status 反映真实状态 */
+  private async persistStatus(): Promise<void> {
+    try {
+      const db = await getDb();
+      db.run(
+        'UPDATE game_sessions SET status = ?, end_time = ? WHERE id = ?',
+        [this.session.status, this.session.endTime || null, this.session.id],
+      );
+      saveDb();
+    } catch (err) {
+      console.error('[Orchestrator] 状态持久化失败:', err);
+    }
+  }
+
+  /** 暂停时阻塞等待；终止时抛出 GameStoppedError 中断当前 handler */
+  private async waitWhilePaused(): Promise<void> {
+    while (this._paused && !this._stopped) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+    if (this._stopped) throw new GameStoppedError();
   }
 
   async addEvent(event: GameEvent): Promise<void> {
@@ -245,7 +304,10 @@ export class GameOrchestrator {
         getConfig: async () => self.getConfig(),
         getRoleDef: (roleType: string): RoleDef => ROLE_DEFS.get(roleType),
         callPlayerModel: async (player, stage, extraVars) => self.callPlayerModel(player, stage, extraVars || {}),
-      wait: (ms: number) => new Promise(r => setTimeout(r, ms)),
+      wait: async (ms: number) => {
+        await self.waitWhilePaused();
+        await new Promise(r => setTimeout(r, ms));
+      },
     };
   }
 
@@ -256,6 +318,9 @@ export class GameOrchestrator {
     stage: string,
     extraVars: Record<string, string>,
   ): Promise<{ thinking: string | null; internal: string | null; public_: string | null }> {
+    // 暂停时等待恢复；终止时抛 GameStoppedError 中断
+    await this.waitWhilePaused();
+
     const info = this.modelClients.get(player.seatNumber);
     if (!info) {
       // 无模型配置时，返回默认值
@@ -289,7 +354,7 @@ export class GameOrchestrator {
       const layer3 = contextAssembler.assemble(player, this.session, this.events);
       const messages = promptEngine.buildMessages(info.systemPrompt, filled2, layer3);
 
-      const response = await info.client.chat(messages);
+      const response = await info.client.chat(messages, this.abortController.signal);
       return response;
     } catch (err: any) {
       console.error(`[AI] 玩家 ${player.seatNumber} 调用失败:`, err.message);

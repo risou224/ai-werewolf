@@ -17,16 +17,18 @@ export class LLMClient {
   }
 
   async chat(
-    messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>
+    messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
+    externalSignal?: AbortSignal,
   ): Promise<LLMResponse> {
     const url = `${this.config.endpoint.replace(/\/$/, '')}/chat/completions`;
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
+      const controller = new AbortController();
+      const onExternalAbort = () => controller.abort();
+      const timer = setTimeout(() => controller.abort(), this.config.timeout * 1000);
+      externalSignal?.addEventListener('abort', onExternalAbort);
       try {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), this.config.timeout * 1000);
-
         const res = await fetch(url, {
           method: 'POST',
           headers: {
@@ -41,7 +43,6 @@ export class LLMClient {
           }),
           signal: controller.signal,
         });
-        clearTimeout(timer);
 
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
         const data = await res.json() as any;
@@ -54,6 +55,9 @@ export class LLMClient {
         if (attempt < this.config.maxRetries) {
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
         }
+      } finally {
+        clearTimeout(timer);
+        externalSignal?.removeEventListener('abort', onExternalAbort);
       }
     }
     throw lastError || new Error('All retries failed');

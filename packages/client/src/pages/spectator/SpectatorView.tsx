@@ -9,11 +9,22 @@ import { GameOverModal } from './GameOverModal.js';
 const GameControls: React.FC<{ status: string }> = ({ status }) => {
   if (status !== 'running' && status !== 'paused') return null;
 
+  const callApi = async (action: 'pause' | 'resume' | 'stop') => {
+    const labels = { pause: '暂停', resume: '恢复', stop: '终止' };
+    try {
+      const res = await fetch(`/api/admin/game/${action}`, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.ok === false) throw new Error(data.error || `HTTP ${res.status}`);
+    } catch (e: any) {
+      alert(`${labels[action]}失败: ${e.message || '网络错误'}`);
+    }
+  };
+
   return (
     <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
       {status === 'running' && (
         <button
-          onClick={() => fetch('/api/admin/game/pause', { method: 'POST' })}
+          onClick={() => callApi('pause')}
           className="px-3 py-1.5 bg-yellow-600/80 rounded-lg text-xs font-medium hover:bg-yellow-500 transition-colors"
         >
           ⏸ 暂停
@@ -25,7 +36,7 @@ const GameControls: React.FC<{ status: string }> = ({ status }) => {
             已暂停
           </span>
           <button
-            onClick={() => fetch('/api/admin/game/resume', { method: 'POST' })}
+            onClick={() => callApi('resume')}
             className="px-3 py-1.5 bg-green-600/80 rounded-lg text-xs font-medium hover:bg-green-500 transition-colors"
           >
             ▶ 恢复
@@ -33,7 +44,7 @@ const GameControls: React.FC<{ status: string }> = ({ status }) => {
         </>
       )}
       <button
-        onClick={() => { if (confirm('确定终止当前对局？')) fetch('/api/admin/game/stop', { method: 'POST' }); }}
+        onClick={() => { if (confirm('确定终止当前对局？')) callApi('stop'); }}
         className="px-3 py-1.5 bg-red-600/80 rounded-lg text-xs font-medium hover:bg-red-500 transition-colors"
       >
         ⏹ 终止

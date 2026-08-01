@@ -238,13 +238,34 @@ export const GameConfigPanel: React.FC = () => {
     }
   };
 
-  if (gameStatus === 'running') {
+  if (gameStatus === 'running' || gameStatus === 'paused') {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🎮</div>
-        <h2 className="text-xl font-bold mb-2">游戏进行中</h2>
+        <h2 className="text-xl font-bold mb-2">{gameStatus === 'paused' ? '游戏已暂停' : '游戏进行中'}</h2>
         <p className="text-gray-400 mb-4">对局 ID: {sessionId}</p>
         <div className="flex justify-center gap-4">
+          {gameStatus === 'running' ? (
+            <button
+              onClick={async () => {
+                await fetch('/api/admin/game/pause', { method: 'POST' });
+                setGameStatus('paused');
+              }}
+              className="px-6 py-3 bg-yellow-600 rounded-lg hover:bg-yellow-500"
+            >
+              ⏸ 暂停
+            </button>
+          ) : (
+            <button
+              onClick={async () => {
+                await fetch('/api/admin/game/resume', { method: 'POST' });
+                setGameStatus('running');
+              }}
+              className="px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500"
+            >
+              ▶ 恢复
+            </button>
+          )}
           <button
             onClick={() => navigate('/')}
             className="px-6 py-3 bg-amber-600 rounded-lg hover:bg-amber-500"
