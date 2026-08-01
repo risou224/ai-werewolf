@@ -1,6 +1,6 @@
 ﻿param()
 
-$projectPath = "c:\Users\54860\Desktop\ai狼人杀聚合"
+$projectPath = $PSScriptRoot
 $logDir = Join-Path $projectPath "logs"
 if (!(Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 
@@ -18,9 +18,20 @@ Write-Host ""
 Write-Host "[0/2] Cleaning residual processes..."
 $any = $false
 try {
-    # 策略1: 按项目路径扫 node/cmd 进程树
+    # 祖先链保护：收集当前进程(PowerShell)的整条祖先链(→cmd→explorer→…)。
+    # 清理时跳过祖先，否则会误杀正在执行 start.bat 的 cmd 父进程(其命令行含项目路径)，导致启动即卡死。
+    $ancestors = [System.Collections.Generic.HashSet[int]]::new()
+    $cur = $PID
+    while ($cur -gt 0) {
+        if (-not $ancestors.Add($cur)) { break }
+        $parent = Get-CimInstance Win32_Process -Filter "ProcessId = $cur" -ErrorAction SilentlyContinue |
+            Select-Object -First 1 -ExpandProperty ParentProcessId
+        if (-not $parent) { break }
+        $cur = [int]$parent
+    }
+    # 策略1: 按项目路径扫 node/cmd 进程树（排除祖先链）
     $procs = Get-CimInstance Win32_Process -Filter "Name = 'node.exe' OR Name = 'cmd.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -and $_.CommandLine.Contains($projectPath) }
+        Where-Object { $_.CommandLine -and $_.CommandLine.Contains($projectPath) -and -not $ancestors.Contains($_.ProcessId) }
     $seenPids = [System.Collections.Generic.HashSet[int]]::new()
     foreach ($p in $procs) {
         $queue = [System.Collections.Generic.Queue[int]]::new()
@@ -39,7 +50,7 @@ $portLines = netstat -ano | Select-String '\b(3001|5173)\b'
 foreach ($line in $portLines) {
     if ($line -match 'LISTENING\s+(\d+)$') {
         $id = [int]$Matches[1]
-        if ($seenPids.Add($id)) { Stop-Process -Id $id -Force -ErrorAction SilentlyContinue; $any = $true }
+        if (-not $ancestors.Contains($id) -and $seenPids.Add($id)) { Stop-Process -Id $id -Force -ErrorAction SilentlyContinue; $any = $true }
     }
     }
 } catch {

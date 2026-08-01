@@ -1,5 +1,5 @@
 ﻿# shutdown.ps1 - Clean up all project processes (process-tree mode)
-$projectPath = "c:\Users\54860\Desktop\ai狼人杀聚合"
+$projectPath = $PSScriptRoot
 $anyKilled = $false
 
 $sep = "=" * 53
