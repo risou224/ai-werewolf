@@ -109,7 +109,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({ gameState, entries
   if (!winner) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
-        <div className="w-[420px] max-h-[90vh] rounded-2xl border border-white/15 overflow-y-auto animate-pop-in relative
+        <div className="w-[min(420px,92vw)] max-h-[90vh] rounded-2xl border border-white/15 overflow-y-auto animate-pop-in relative
           bg-night-900/95 backdrop-blur-xl shadow-card-glow p-8 text-center"
         >
           <div className="text-5xl mb-4">⏹️</div>
@@ -136,7 +136,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({ gameState, entries
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
-      <div className="w-[680px] max-h-[90vh] rounded-2xl border overflow-y-auto animate-pop-in relative
+      <div className="w-[min(680px,92vw)] max-h-[90vh] rounded-2xl border overflow-y-auto animate-pop-in relative
         bg-night-900/95 backdrop-blur-xl shadow-card-glow"
         style={{ borderColor: `${winnerColor}55` }}
       >

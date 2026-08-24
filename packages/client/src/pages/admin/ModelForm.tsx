@@ -168,7 +168,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({ onClose, onSuccess, editMo
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[28rem] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
+      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[min(28rem,92vw)] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
         <h3 className="text-lg font-bold gold-text">{isEdit ? '编辑模型' : '添加模型'}</h3>
 
         {/* 供应商预设（仅添加模式显示） */}

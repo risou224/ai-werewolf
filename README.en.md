@@ -22,6 +22,7 @@ Have fun!
 - Full Werewolf rules: Seer / Witch / Hunter / Idiot / Werewolf / Villager, including sheriff election, last words, hunter's shot, and badge handover
 - God's-eye live spectating (speeches / votes / reasoning visible), with game replays
 - Board presets + custom roles, compatible with any OpenAI-format API (key can be left blank for local services)
+- 📦 **Electron desktop build**: packaged as a single-file exe running as a real desktop process (not a web page); closing the window fully terminates the backend
 
 ## Quick Start
 
@@ -33,6 +34,8 @@ npm run dev:client    # frontend :5173 (another terminal)
 ```
 
 Windows scripts: `start.bat` (start) · `shutdown.bat` (shutdown) · `restart-server.bat` (restart backend)
+
+**Desktop build (Electron)**: `npm run build:electron` → produces `打包成品/electron/ai-werewolf-v0.1.2-portable-x64.exe` (single-file exe, a real desktop process; closing the window fully terminates the backend).
 
 ## Usage
 

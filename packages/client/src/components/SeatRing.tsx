@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import type { PlayerState } from '@ai-werewolf/shared';
 import { PlayerCard } from './PlayerCard.js';
 
@@ -12,6 +12,13 @@ interface SeatRingProps {
   /** 夜晚=true → 中央月亮；白天=false → 中央太阳 */
   isNight?: boolean;
 }
+
+/** 座位圈内部坐标系尺寸（固定），整体按容器可用空间做等比缩放 */
+const BASE = 520;
+const CENTER = BASE / 2;
+/** 允许缩放的上下限：过小会看不清文字，过大会撑爆版面 */
+const MIN_SCALE = 0.35;
+const MAX_SCALE = 1.4;
 
 /** 月亮 SVG */
 const Moon: React.FC<{ size: number }> = ({ size }) => (
@@ -60,46 +67,74 @@ export const SeatRing: React.FC<SeatRingProps> = ({
   const total = players.length;
   const radius = total <= 8 ? 148 : total <= 12 ? 185 : 225;
 
+  // 自适应：测量父容器可用空间，把固定 520×520 的座位圈整体等比缩放
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useLayoutEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const compute = () => {
+      const { width, height } = el.getBoundingClientRect();
+      // 留 8px 余量，避免边缘卡片被裁切
+      const availW = width - 8;
+      const availH = height - 8;
+      if (availW <= 0 || availH <= 0) return;
+      const fit = Math.min(availW / BASE, availH / BASE);
+      const next = Math.min(Math.max(fit, MIN_SCALE), MAX_SCALE);
+      setScale(prev => (Math.abs(prev - next) < 0.001 ? prev : next));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <div className="relative w-[520px] h-[520px] mx-auto">
-      {/* 环底：暗夜圆桌光晕 */}
-      <div className="absolute inset-[52px] rounded-full pointer-events-none
-        bg-[radial-gradient(circle,rgba(255,210,77,0.05)_0%,rgba(255,255,255,0.02)_45%,transparent_70%)]"
-      />
-      <div className="absolute inset-[76px] rounded-full pointer-events-none border border-white/5" />
+    <div ref={boxRef} className="relative w-full h-full min-w-0 min-h-0 flex items-center justify-center">
+      <div
+        className="relative w-[520px] h-[520px] shrink-0"
+        style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
+      >
+        {/* 环底：暗夜圆桌光晕 */}
+        <div className="absolute inset-[52px] rounded-full pointer-events-none
+          bg-[radial-gradient(circle,rgba(255,210,77,0.05)_0%,rgba(255,255,255,0.02)_45%,transparent_70%)]"
+        />
+        <div className="absolute inset-[76px] rounded-full pointer-events-none border border-white/5" />
 
-      {players.map((player, i) => {
-        const angle = (2 * Math.PI * i) / total - Math.PI / 2;
-        const x = 260 + radius * Math.cos(angle) - 38;
-        const y = 260 + radius * Math.sin(angle) - 56;
-        const isSelected = selectedSeats?.includes(player.seatNumber) ?? false;
-        return (
-          <div
-            key={player.seatNumber}
-            className={`absolute transition-all duration-300 ${isSelected ? 'z-10' : ''}`}
-            style={{ left: `${x}px`, top: `${y}px` }}
-          >
-            <PlayerCard
-              player={player}
-              isSpeaking={player.seatNumber === currentSpeaker}
-              showRole={showRoles}
-              onClick={onPlayerClick ? () => onPlayerClick(player.seatNumber) : undefined}
-              isSelected={isSelected}
-            />
-          </div>
-        );
-      })}
+        {players.map((player, i) => {
+          const angle = (2 * Math.PI * i) / total - Math.PI / 2;
+          const x = CENTER + radius * Math.cos(angle) - 38;
+          const y = CENTER + radius * Math.sin(angle) - 56;
+          const isSelected = selectedSeats?.includes(player.seatNumber) ?? false;
+          return (
+            <div
+              key={player.seatNumber}
+              className={`absolute transition-all duration-300 ${isSelected ? 'z-10' : ''}`}
+              style={{ left: `${x}px`, top: `${y}px` }}
+            >
+              <PlayerCard
+                player={player}
+                isSpeaking={player.seatNumber === currentSpeaker}
+                showRole={showRoles}
+                onClick={onPlayerClick ? () => onPlayerClick(player.seatNumber) : undefined}
+                isSelected={isSelected}
+              />
+            </div>
+          );
+        })}
 
-      {/* 中央氛围层：月亮 / 太阳 + 标签 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center">
-        <div className="flex flex-col items-center gap-2">
-          <div className={`${isNight ? 'animate-float-y' : 'animate-spin-slow'}`}>
-            {isNight ? <Moon size={72} /> : <Sun size={72} />}
+        {/* 中央氛围层：月亮 / 太阳 + 标签 */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className={`${isNight ? 'animate-float-y' : 'animate-spin-slow'}`}>
+              {isNight ? <Moon size={72} /> : <Sun size={72} />}
+            </div>
+            <span className={`text-sm font-bold tracking-[0.35em] pl-[0.35em]
+              ${isNight ? 'text-indigo-200/80' : 'text-gold-400/90'}`}>
+              {centerLabel}
+            </span>
           </div>
-          <span className={`text-sm font-bold tracking-[0.35em] pl-[0.35em]
-            ${isNight ? 'text-indigo-200/80' : 'text-gold-400/90'}`}>
-            {centerLabel}
-          </span>
         </div>
       </div>
     </div>

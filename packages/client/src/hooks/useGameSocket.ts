@@ -26,7 +26,9 @@ export function useGameSocket() {
   const lastErrorCountRef = useRef(0);
 
   useEffect(() => {
-    const s = io('ws://localhost:3001');
+    // 同源连接：dev 下由 Vite 把 /socket.io 代理到后端，打包/Electron 下同源即后端。
+    // 这样即使后端端口自动切换（3001→3002…）也不会连错。
+    const s = io();
 
     s.on('connect', () => {
       setConnected(true);

@@ -339,9 +339,11 @@ const ReplayPlayer: React.FC<{ replayId: string }> = ({ replayId }) => {
       </div>
 
       {/* Main Display */}
-      <div className="grid grid-cols-[280px_1fr_300px] gap-4 flex-1 min-h-0">
-        <InfoPanel gameState={infoPanelState} />
-        <div className="flex flex-col items-center justify-center">
+      <div className="grid grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)] gap-4 flex-1 min-h-0 min-w-0">
+        <div className="min-w-0 min-h-0">
+          <InfoPanel gameState={infoPanelState} />
+        </div>
+        <div className="flex flex-col items-center justify-center min-h-0 min-w-0 overflow-hidden">
           <SeatRing
             players={builtState.players}
             currentSpeaker={builtState.currentSpeaker}
@@ -354,19 +356,21 @@ const ReplayPlayer: React.FC<{ replayId: string }> = ({ replayId }) => {
             }
           />
         </div>
-        <EventLog
-          entries={replay.timeline.slice(0, currentIndex + 1).map(ev => eventToEntry({
-            id: `replay-${ev.index}`,
-            sessionId: replay.sessionId,
-            round: ev.round,
-            phase: ev.phase as GamePhase,
-            type: ev.type as EventType,
-            actorSeat: ev.actorSeat,
-            targetSeat: ev.targetSeat,
-            data: ev.data as Record<string, unknown>,
-            timestamp: ev.timestamp,
-          }))}
-        />
+        <div className="min-w-0 min-h-0">
+          <EventLog
+            entries={replay.timeline.slice(0, currentIndex + 1).map(ev => eventToEntry({
+              id: `replay-${ev.index}`,
+              sessionId: replay.sessionId,
+              round: ev.round,
+              phase: ev.phase as GamePhase,
+              type: ev.type as EventType,
+              actorSeat: ev.actorSeat,
+              targetSeat: ev.targetSeat,
+              data: ev.data as Record<string, unknown>,
+              timestamp: ev.timestamp,
+            }))}
+          />
+        </div>
       </div>
     </div>
   );

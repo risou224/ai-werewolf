@@ -1,0 +1,39 @@
+{
+  "name": "@ai-werewolf/desktop",
+  "version": "0.1.2",
+  "private": true,
+  "description": "AI 狼人杀 · Electron 桌面壳",
+  "author": "risou224",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "node ../../scripts/build-electron.mjs",
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "com.risou224.aiwerewolf",
+    "productName": "AI狼人杀",
+    "electronVersion": "31.7.7",
+    "directories": {
+      "output": "../../打包成品/electron"
+    },
+    "files": [
+      "dist/main.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "web", "to": "web" },
+      { "from": "sql-wasm.wasm", "to": "sql-wasm.wasm" }
+    ],
+    "win": {
+      "target": ["portable"],
+      "signAndEditExecutable": false,
+      "artifactName": "ai-werewolf-v${version}-win-${arch}.exe"
+    },
+    "mac": {
+      "target": ["dmg"]
+    },
+    "portable": {
+      "artifactName": "ai-werewolf-v${version}-portable-${arch}.exe"
+    }
+  }
+}

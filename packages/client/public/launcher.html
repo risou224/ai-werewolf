@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 狼人杀 · 启动器</title>
+<style>
+  :root {
+    --bg-0:#05050d; --bg-1:#0a0a16; --bg-2:#12122a;
+    --gold-300:#ffe9a8; --gold-400:#ffd24d; --gold-500:#f0b429; --gold-600:#c9941f;
+    --wolfred-400:#ff5c6c; --wolfred-500:#e94560; --wolfred-600:#c62f4a;
+    --ok:#4ade80; --ok-dim:rgba(74,222,128,.14);
+    --err:#ff5c6c; --err-dim:rgba(233,69,96,.14);
+    --txt:#e5e7eb; --dim:#8b91a7;
+  }
+  * { box-sizing:border-box; }
+  html,body { height:100%; margin:0; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+    color:var(--txt); background:var(--bg-1);
+    background-image:linear-gradient(160deg,#05050d 0%,#0a0a16 45%,#12122a 100%);
+    background-attachment:fixed; -webkit-font-smoothing:antialiased;
+    min-height:100%; padding:28px 16px 40px;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  }
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(255,210,77,.18);border-radius:3px}
+
+  /* 小窗口卡片 */
+  .win{width:400px;max-width:94vw;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08);background:linear-gradient(180deg,#12122a,#0a0a16)}
+  .win-titlebar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07)}
+  .win-dot{width:12px;height:12px;border-radius:50%}
+  .win-dot.r{background:#ff5f57}.win-dot.y{background:#febc2e}.win-dot.g{background:#28c840}
+  .win-titlebar .title{font-size:12.5px;font-weight:600;color:#cbd5e1;margin-left:6px}
+  .win-titlebar .sp{flex:1}
+  .win-body{padding:18px 20px 16px}
+
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .brand .logo{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:linear-gradient(135deg,rgba(255,210,77,.18),rgba(255,210,77,.05));border:1px solid rgba(255,210,77,.35);box-shadow:0 0 16px rgba(255,210,77,.15)}
+  .brand .nm{font-size:17px;font-weight:700;letter-spacing:.03em}
+  .brand .ver{font-size:11px;color:var(--dim);margin-top:2px}
+
+  .status{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;background:rgba(139,145,167,.12);border:1px solid rgba(255,255,255,.12);margin-bottom:14px;transition:all .3s}
+  .status.ok{background:var(--ok-dim);border-color:rgba(74,222,128,.3)}
+  .status.bad{background:var(--err-dim);border-color:rgba(233,69,96,.3)}
+  .status .dot{width:11px;height:11px;border-radius:50%;background:#8b91a7;position:relative;flex-shrink:0}
+  .status.ok .dot{background:var(--ok)}
+  .status.ok .dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(74,222,128,.5);animation:ping 1.6s ease-out infinite}
+  .status.bad .dot{background:var(--err)}
+  @keyframes ping{0%{transform:scale(.6);opacity:.9}80%,100%{transform:scale(1.7);opacity:0}}
+  .status .s-txt{font-size:13px;font-weight:600;color:#c3c9dd}
+  .status.ok .s-txt{color:var(--ok)}
+  .status.bad .s-txt{color:var(--err)}
+  .status .s-node{font-size:11px;color:var(--dim);margin-top:1px}
+
+  .tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:2px}
+  .tab{flex:1;text-align:center;padding:8px 10px;border-radius:9px 9px 0 0;font-size:12.5px;font-weight:600;color:var(--dim);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit}
+  .tab:hover{color:#cbd5e1}
+  .tab.active{color:var(--gold-300);border-bottom-color:var(--gold-400);background:rgba(255,210,77,.06)}
+  .pane{display:none}
+  .pane.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(2px)}to{opacity:1}}
+
+  h3.sec{font-size:12px;font-weight:700;color:#cbd5e1;letter-spacing:.05em;margin:0 0 10px}
+  .steps{display:flex;flex-direction:column;gap:8px}
+  .step-line{display:flex;gap:10px;font-size:12.5px;color:#c3c9dd;line-height:1.6;align-items:flex-start}
+  .step-line .n{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:rgba(255,210,77,.14);color:var(--gold-300);border:1px solid rgba(255,210,77,.3)}
+  .step-line b{color:#f3f4f6;font-weight:600}
+
+  .about{display:flex;flex-direction:column;gap:12px}
+  .about-card{border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;background:rgba(255,255,255,.03)}
+  .about-card h4{font-size:11.5px;font-weight:700;color:var(--gold-300);letter-spacing:.05em;margin:0 0 6px}
+  .about-card p{font-size:12px;color:#c3c9dd;line-height:1.7;margin:0}
+  .about-card a{color:#7aa7ff;text-decoration:none}
+  .about-card a:hover{text-decoration:underline}
+
+  .btns{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:inherit}
+  .btn.open{background:rgba(255,255,255,.06);color:#e5e7eb;border:1px solid rgba(255,255,255,.14)}
+  .btn.open:hover{background:rgba(255,255,255,.1)}
+  .btn.stops{background:linear-gradient(180deg,var(--wolfred-500),var(--wolfred-600));color:#fff;box-shadow:0 6px 18px rgba(233,69,96,.35)}
+  .btn.stops:hover{filter:brightness(1.1)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+
+  .foot{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:var(--dim);border-top:1px solid rgba(255,255,255,.07);padding-top:12px;margin-top:14px;line-height:1.6}
+  .foot .ic{font-size:13px}
+
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:rgba(20,20,40,.95);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 18px;font-size:13px;color:#e5e7eb;opacity:0;pointer-events:none;transition:all .3s;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:50;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+  <div class="win">
+    <div class="win-titlebar">
+      <span class="win-dot r"></span><span class="win-dot y"></span><span class="win-dot g"></span>
+      <span class="title">AI 狼人杀 · 启动器</span>
+      <span class="sp"></span>
+      <span style="font-size:11px;color:#6b7280">Windows</span>
+    </div>
+    <div class="win-body">
+      <div class="brand">
+        <div class="logo">🐺</div>
+        <div>
+          <div class="nm">AI 狼人杀</div>
+          <div class="ver">v0.1.2 · 多 LLM 对抗博弈平台</div>
+        </div>
+      </div>
+
+      <!-- 后台运行状态：真实探测 /api/health -->
+      <div class="status" id="status">
+        <span class="dot"></span>
+        <div>
+          <div class="s-txt" id="statusTxt">探测中…</div>
+          <div class="s-node" id="statusSub">正在检查本地服务</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="usage">使用说明</button>
+        <button class="tab" data-tab="about">关于·声明</button>
+      </div>
+
+      <div class="pane active" id="pane-usage">
+        <h3 class="sec">使用方式</h3>
+        <div class="steps">
+          <div class="step-line"><span class="n">1</span><span><b>观战台</b>：浏览器已自动打开，直接在这里看实时对局。</span></div>
+          <div class="step-line"><span class="n">2</span><span><b>模型管理</b>：添加 API 配置（地址 + Key），拉取并勾选要用的模型。</span></div>
+          <div class="step-line"><span class="n">3</span><span><b>游戏配置</b>：选板子 → 给每个座位分配模型（可 🎲 随机）→ 开始游戏。</span></div>
+          <div class="step-line"><span class="n">4</span><span><b>回放</b>：对局结束后可随时回看整场。</span></div>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-about">
+        <div class="about">
+          <div class="about-card">
+            <h4>署名</h4>
+            <p>出品：AI 狼人杀聚合平台<br>作者：risou224</p>
+          </div>
+          <div class="about-card">
+            <h4>免责声明</h4>
+            <p>本项目完全由 AI 编写，代码未经人工审查，功能经测试可正常运行，使用风险自负。</p>
+          </div>
+          <div class="about-card">
+            <h4>开源声明</h4>
+            <p>本项目基于 <b>MIT License</b> 开源，仓库：<a href="https://github.com/risou224/ai-werewolf" target="_blank" rel="noopener">github.com/risou224/ai-werewolf</a>。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn open" id="btnOpen">🔄 重新打开浏览器</button>
+        <button class="btn stops" id="btnStop">⏻ 完全关闭后台</button>
+      </div>
+
+      <div class="foot">
+        <span class="ic">⚠️</span>
+        <span>关闭本小窗口<b>不会</b>退出后台，点「完全关闭后台」才会真正退出。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  var toast = document.getElementById('toast');
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function(){ toast.classList.remove('show'); }, 3000);
+  }
+
+  // ── 分页标签 ──
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('active'); });
+      document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ── 后台状态：真实探测 /api/health ──
+  var statusBox = document.getElementById('status');
+  var statusTxt = document.getElementById('statusTxt');
+  var statusSub = document.getElementById('statusSub');
+
+  function setStatus(state, port){
+    statusBox.classList.remove('ok','bad');
+    if(state === 'ok'){
+      statusBox.classList.add('ok');
+      statusTxt.textContent = '后台运行中';
+      statusSub.textContent = (port ? ('服务端口 ' + port + ' · ') : '') + '浏览器已打开';
+    } else if(state === 'bad'){
+      statusBox.classList.add('bad');
+      statusTxt.textContent = '后台未启动 / 连接失败';
+      statusSub.textContent = '请运行打包版或 start.ps1';
+    } else {
+      statusTxt.textContent = '探测中…';
+      statusSub.textContent = '正在检查本地服务';
+    }
+  }
+
+  function probe(){
+    var ctrl = new AbortController();
+    var t = setTimeout(function(){ ctrl.abort(); }, 3500);
+    fetch('/api/health', { cache:'no-store', signal:ctrl.signal })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        clearTimeout(t);
+        if(d && d.status === 'ok') setStatus('ok', d.port);
+        else setStatus('bad');
+      })
+      .catch(function(){ clearTimeout(t); setStatus('bad'); })
+      .finally(function(){ clearTimeout(t); });
+  }
+  setStatus('check');
+  probe();
+  setInterval(probe, 3000);
+
+  // ── 重新打开浏览器 ──
+  document.getElementById('btnOpen').addEventListener('click', function(){
+    window.open('/', '_blank', 'noopener');
+    showToast('已打开浏览器：' + location.origin);
+  });
+
+  // ── 完全关闭后台 ──
+  document.getElementById('btnStop').addEventListener('click', function(){
+    if(!confirm('确定完全关闭后台程序吗？对局数据会先保存再退出。')) return;
+    var btn = document.getElementById('btnStop');
+    btn.disabled = true;
+    btn.textContent = '正在退出…';
+    fetch('/api/admin/shutdown', { method:'POST' })
+      .then(function(r){ return r.json().catch(function(){ return {}; }); })
+      .then(function(d){
+        if(d.ok === false) throw new Error(d.error || '退出失败');
+        showToast('已保存数据并退出，后台已完全关闭。');
+        setTimeout(function(){ try{ window.close(); }catch(e){} }, 600);
+      })
+      .catch(function(e){
+        btn.disabled = false;
+        btn.textContent = '⏻ 完全关闭后台';
+        showToast('退出指令发送失败：' + (e && e.message ? e.message : '网络错误'));
+      });
+  });
+</script>
+</body>
+</html>

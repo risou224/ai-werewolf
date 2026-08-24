@@ -214,14 +214,16 @@ export const SpectatorView: React.FC = () => {
       </div>
 
       {/* 主体三栏 */}
-      <div className="flex-1 grid grid-cols-[240px_1fr_300px] gap-3 min-h-0">
-        <InfoPanel
-          gameState={gameState}
-          godMode={godMode}
-          onPlayerClick={handlePlayerClick}
-          selectedSeat={activeSeat}
-        />
-        <div className="flex items-center justify-center min-h-0 overflow-auto">
+      <div className="flex-1 grid grid-cols-[minmax(0,240px)_minmax(0,1fr)_minmax(0,300px)] gap-3 min-h-0 min-w-0">
+        <div className="min-w-0 min-h-0">
+          <InfoPanel
+            gameState={gameState}
+            godMode={godMode}
+            onPlayerClick={handlePlayerClick}
+            selectedSeat={activeSeat}
+          />
+        </div>
+        <div className="flex items-center justify-center min-h-0 min-w-0 overflow-hidden">
           <SeatRing
             players={gameState.players.map((p: any) => ({ ...p, camp: p.camp || 'good' }))}
             currentSpeaker={gameState.currentSpeaker}
@@ -232,7 +234,9 @@ export const SpectatorView: React.FC = () => {
             isNight={nightPhase}
           />
         </div>
-        <EventLog entries={entries} godMode={godMode} />
+        <div className="min-w-0 min-h-0">
+          <EventLog entries={entries} godMode={godMode} />
+        </div>
       </div>
 
       {/* 钉住窗口 — 无遮罩，直接浮在主界面上方 */}

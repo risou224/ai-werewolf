@@ -22,6 +22,7 @@
 - 完整狼人杀规则：预言家/女巫/猎人/白痴/狼人/平民，含警长、遗言、猎人开枪、警徽移交
 - 上帝视角实时观战（发言/投票/思考过程），支持对局回放
 - 板子预设 + 自定义角色，支持任意 OpenAI 兼容 API（本地服务可留空 Key）
+- 📦 **Electron 桌面版**：打包为单文件 exe，以真实桌面进程运行（非网页），关闭窗口即彻底退出后台
 
 ## 快速开始
 
@@ -33,6 +34,8 @@ npm run dev:client    # 前端 :5173（另开终端）
 ```
 
 Windows 脚本：`start.bat`（启动）· `shutdown.bat`（关闭）· `restart-server.bat`（重启后端）
+
+**打包桌面版（Electron）**：`npm run build:electron` → 产出 `打包成品/electron/ai-werewolf-v0.1.2-portable-x64.exe`（单文件 exe，真实桌面进程，关闭窗口即完全退出后台）。
 
 ## 使用
 

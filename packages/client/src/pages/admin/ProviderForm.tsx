@@ -166,7 +166,7 @@ export const ProviderForm: React.FC<ProviderFormProps> = ({ onClose, onSuccess, 
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[34rem] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
+      <form onSubmit={handleSubmit} className="bg-night-900/95 border border-white/15 rounded-card p-6 w-[min(34rem,92vw)] space-y-4 max-h-[90vh] overflow-y-auto shadow-card-glow backdrop-blur-xl">
         <h3 className="text-lg font-bold gold-text">{isEdit ? '编辑 API 配置' : '添加 API 配置'}</h3>
         <p className="text-xs text-gray-500">
           一个 API 配置 = 一个地址 + 一个 Key，下面可以挂多个模型。勾选 = 挂载，取消勾选已挂载的模型 = 移除。

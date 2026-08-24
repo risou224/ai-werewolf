@@ -52,7 +52,7 @@ export const UISettingsModal: React.FC<UISettingsModalProps> = ({ open, onClose 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-[520px] max-h-[85vh] overflow-y-auto rounded-card p-5 space-y-5 animate-pop-in
+        className="w-[min(520px,92vw)] max-h-[85vh] overflow-y-auto rounded-card p-5 space-y-5 animate-pop-in
           bg-night-900/95 border border-white/15 shadow-card-glow backdrop-blur-xl"
         onClick={e => e.stopPropagation()}
       >

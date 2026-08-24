@@ -418,10 +418,14 @@ export function registerAdminRoutes(app: FastifyInstance, io: SocketServer): voi
   });
 
   // ============ Health ============
-  app.get('/api/health', async () => ({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-  }));
+  // 返回真实端口，供启动器小窗口显示“服务端口 xxx”
+  app.get('/api/health', async () => {
+    const addr = app.server.address();
+    const port = addr && typeof addr === 'object' && typeof (addr as any).port === 'number'
+      ? (addr as any).port
+      : null;
+    return { status: 'ok', port, timestamp: new Date().toISOString() };
+  });
 
   // ============ 彻底退出（仅本机） ============
   // 打包版使用：点击页面右上角「退出软件」按钮时调用，

@@ -1,5 +1,24 @@
 # 更新日志
 
+## 未发布 — Electron 桌面版（开发中）
+
+### 桌面化（Electron）
+
+- 🖥️ **Electron 桌面版**：打包改为 Electron（`npm run build:electron`），产出单文件 exe，以真实桌面进程运行，后端与 Electron 同进程
+- 🪟 **启动器小窗口**：替代黑色控制台 —— 真实后台状态探测（`/api/health`）、小分页标签（使用说明 / 关于·声明，含署名/免责/开源声明）、「🔄 重新打开浏览器」「⏻ 完全关闭后台」按钮
+- ⏻ **关窗即彻底退出**：关闭窗口 → 整个进程（含后端）退出，无孤儿进程；退出前 `before-quit` 兜底存库
+- 🔌 **Socket 同源化**：`io()` 同源连接（dev 走 Vite 代理，打包同源即后端），后端端口自动切换不再连错
+
+### 前端
+
+- 📐 **座位圈自适应**：`SeatRing` 用 ResizeObserver 等比缩放；观战台三栏改 `minmax(0, …)`；弹窗宽度 `min(宽,92vw)` —— 窗口缩放不再溢出
+- 📄 **前端预览改名**：`widget-前端UI预览.html` → `widget-exe窗口界面.html`（改为静态展示页）
+
+### 后端
+
+- 🔧 **startServer 重构**：抽出可复用的 `startServer(options)`，Electron 与独立 Node 共用
+- 🩺 **`/api/health` 返回真实端口**；sql.js wasm 路径与 DB 路径改为**运行时解析**（支持 Electron 资源目录 / 用户数据目录）
+
 ## 0.1.2 — 对局控制修复 + UI 手游化美化 (2026-08-01)
 
 ### 对局控制与 UI 修复

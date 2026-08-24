@@ -9,11 +9,14 @@
     "build:shared": "npm run build -w packages/shared",
     "build:server": "npm run build -w packages/server",
     "build:client": "npm run build -w packages/client",
+    "build:electron": "node scripts/build-electron.mjs",
     "db:init": "npm run db:init -w packages/server",
     "lint": "tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "electron": "31.7.7",
+    "electron-builder": "^24.13.3"
   }
 }
