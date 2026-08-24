@@ -2,6 +2,17 @@
 
 ## 0.1.3 — 提示词管理标签页 + Electron 桌面版 + 构建修复 (2026-08-24)
 
+### 打包稳定性修复（随 0.1.3 一并发布）
+
+- 🐛 **修复打包启动崩溃**：`packages/server/src/prompts/seed.ts` 模块加载时无条件执行 `fileURLToPath(import.meta.url)`，esbuild 转 CJS 后 `import.meta` 为空对象导致 `ERR_INVALID_ARG_TYPE` 崩溃 —— 改为与 `start.ts` 一致的 `__dirname` 守卫式写法（CJS 走 `__dirname`，ESM 走 `import.meta.url`）
+- 📦 **提示词模板随包分发**：12 个 `defaults/*.md` 阶段模板打进安装包（`extraResources` → `resources/prompts/defaults`），服务器启动时若 `prompt_templates` 表为空自动导入默认模板（**不覆盖**用户通过管理界面修改过的模板）—— 用户机器开箱即用，AI 提示词不再缺失
+- 🔌 **端口冲突彻底兜底**：优先 3001 → 被占自动扫描下一段 → 区间占满退回系统随机端口 —— 任何机器上都不会因端口被占而退出（原实现探活与监听存在竞态，仍可能 EADDRINUSE 崩溃）
+- 🛡️ **单实例守卫**（`desktop/src/single-instance.ts`）：系统同一时刻只运行一个 AI 狼人杀实例 ——
+  - 重复启动：探活老实例 `/api/health`（原生 socket，1s 硬超时），健康则触发老实例聚焦窗口、新实例让位退出（「用老进程」）
+  - 老实例卡死/无响应：两次探活失败判定卡死 → `taskkill /T /F` 树杀老进程（释放端口）→ 新实例接管
+  - 进程名兜底：拿不到实例信息时只杀「启动时间早于本实例」的同名进程，绝不误杀自己的 GPU/渲染子进程
+  - 实现要点：先探活再调 `requestSingleInstanceLock()`（老实例挂起时管道握手会阻塞 ~20s）；不用 `process.kill(pid,0)`（Windows 上会强杀）；不依赖 wmic（新版 Windows 已移除）
+
 ### 桌面化（Electron）
 
 - 🖥️ **Electron 桌面版**：打包改为 Electron（`npm run build:electron`），产出单文件 exe，以真实桌面进程运行，后端与 Electron 同进程

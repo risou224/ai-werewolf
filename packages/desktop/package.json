@@ -22,11 +22,13 @@
     ],
     "extraResources": [
       { "from": "web", "to": "web" },
-      { "from": "sql-wasm.wasm", "to": "sql-wasm.wasm" }
+      { "from": "sql-wasm.wasm", "to": "sql-wasm.wasm" },
+      { "from": "defaults", "to": "prompts/defaults" }
     ],
     "win": {
       "target": ["portable"],
       "signAndEditExecutable": false,
+      "icon": "build/icon.ico",
       "artifactName": "ai-werewolf-v${version}-win-${arch}.exe"
     },
     "mac": {

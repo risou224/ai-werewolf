@@ -8,6 +8,7 @@ import cors from '@fastify/cors';
 import { Server as SocketServer } from 'socket.io';
 import { initSchema } from './db/schema.js';
 import { seedRolesAndBoards } from './db/seed-roles.js';
+import { seedDefaultPromptsIfEmpty } from './prompts/seed.js';
 import { registerAdminRoutes } from './service/admin-routes.js';
 import { registerSpectatorRoutes } from './service/spectator-routes.js';
 import { registerSocketHandlers } from './service/socket-handler.js';
@@ -97,6 +98,7 @@ function openBrowser(url: string): void {
 export async function startServer(options: StartServerOptions = {}): Promise<ServerHandle> {
   await initSchema();
   await seedRolesAndBoards();
+  await seedDefaultPromptsIfEmpty();
 
   const app = Fastify({ logger: true });
   await app.register(cors, { origin: true });
@@ -113,12 +115,33 @@ export async function startServer(options: StartServerOptions = {}): Promise<Ser
   const servingWeb = registerStaticWeb(app, webDir);
 
   const preferredPort = options.port ?? parseInt(process.env.SERVER_PORT || '3001', 10);
-  const PORT = await findAvailablePort(preferredPort);
-  if (PORT !== preferredPort) {
-    console.log(`⚠️ 端口 ${preferredPort} 已被占用，已自动切换到端口 ${PORT}`);
-  }
 
-  await app.listen({ port: PORT, host: '0.0.0.0' });
+  // 端口策略：优先 preferredPort；被占用则自动扫描下一段区间；区间被占满则退回系统随机端口。
+  // 任何机器上（哪怕 3001-3200 全被占用）都能启动，绝不让端口问题导致程序退出。
+  let PORT = preferredPort;
+  for (;;) {
+    try {
+      await app.listen({ port: PORT, host: '0.0.0.0' });
+      if (PORT === 0) {
+        const addr = app.server.address();
+        if (addr && typeof addr === 'object') PORT = addr.port;
+      }
+      break;
+    } catch (err: any) {
+      if (err?.code !== 'EADDRINUSE') throw err;
+      if (PORT !== 0) console.log(`⚠️ 端口 ${PORT} 已被占用，正在查找可用端口…`);
+      if (PORT === 0) throw err;
+      try {
+        PORT = await findAvailablePort(PORT + 1);
+      } catch {
+        console.log(`⚠️ 端口 ${preferredPort}-${preferredPort + 200} 均被占用，改用系统随机端口`);
+        PORT = 0;
+      }
+    }
+  }
+  if (PORT !== preferredPort) {
+    console.log(`已自动切换到端口 ${PORT}`);
+  }
   const url = `http://localhost:${PORT}`;
   console.log(`Server running on ${url}`);
 

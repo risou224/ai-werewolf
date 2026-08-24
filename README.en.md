@@ -62,6 +62,8 @@ Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `
 - 🧠 **Prompt manager tab**: new `/admin/prompts` — three-layer prompt architecture overview + stage×role template browse/edit (placeholder highlighting, save takes effect immediately, one-click reset to defaults) + live assembly preview; backend gains prompt read/write & reset APIs
 - 🔧 **Server build fixes**: fixed 3 type errors, `npm run build:server` passes again
 - 🖥️ **Electron desktop app**: packaged as a single-file Electron exe (real desktop process; closing the window fully exits), launcher mini-window replaces the black console (real backend status probing, small tabs)
+- 🛡️ **Single-instance guard**: only one instance runs at a time — launching again focuses the existing window and the new process yields; if the old instance is hung/unresponsive it is force-killed and the new instance takes over (process-name fallback cleanup never kills its own children)
+- 🔧 **Packaging stability fixes**: fixed the startup crash after packaging (`import.meta` under CJS bundle); prompt templates now ship inside the package and auto-seed on first launch (without overwriting user edits); port conflicts auto-fall-back to an available port — the app never exits just because a port is taken
 
 ### 0.1.2 (2026-08-01)
 
