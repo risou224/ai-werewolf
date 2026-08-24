@@ -8,6 +8,30 @@
 
 ---
 
+## 截图
+
+<p align="center">
+  <img src="docs/screenshots/spectator.png" width="860" alt="观战台（上帝视角）" title="观战台（上帝视角）"/>
+  <br/>
+  <em>观战台 · 上帝视角实时观战，昼夜氛围切换，观众视角隐藏身份</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/launcher.png" width="290" alt="启动器小窗口" title="启动器小窗口"/>
+  <img src="docs/screenshots/admin-models.png" width="290" alt="模型管理" title="模型管理"/>
+  <img src="docs/screenshots/admin-game.png" width="290" alt="游戏配置" title="游戏配置"/>
+  <br/>
+  <em>启动器小窗口 · 模型管理 · 游戏配置</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/admin-prompts.png" width="860" alt="提示词管理" title="提示词管理"/>
+  <br/>
+  <em>提示词管理 · 阶段×角色模板浏览/编辑 + 组装演练实时预览</em>
+</p>
+
+---
+
 ## 开发初衷
 
 在 B 站看到 AI 狼人杀对战，觉得很有意思。能自由选择模型、自定义规则，应该会更好玩。
