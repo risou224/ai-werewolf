@@ -1,6 +1,6 @@
 {
   "name": "@ai-werewolf/desktop",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "description": "AI 狼人杀 · Electron 桌面壳",
   "author": "risou224",

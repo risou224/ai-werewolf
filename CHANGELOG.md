@@ -1,6 +1,6 @@
 # 更新日志
 
-## 未发布 — Electron 桌面版（开发中）
+## 0.1.3 — 提示词管理标签页 + Electron 桌面版 + 构建修复 (2026-08-24)
 
 ### 桌面化（Electron）
 
@@ -11,11 +11,15 @@
 
 ### 前端
 
+- 🧠 **提示词管理标签页**（`/admin/prompts`）：三层提示词架构概览 + 阶段×角色模板浏览/编辑（占位符金色高亮、默认/已修改标记、保存即生效）+ 组装演练实时预览（可改示例值看拼装结果）；设计参考「提示词说明」工作台窗口
+- 🎨 **窗口1 设计稿更新**：`widget-exe窗口界面.html` 新增提示词管理窗口预览，并加自适应缩放（按视口自动适配 + 悬浮缩放控制条 −/＋/100%/适应窗口，任意视口完整可见）
 - 📐 **座位圈自适应**：`SeatRing` 用 ResizeObserver 等比缩放；观战台三栏改 `minmax(0, …)`；弹窗宽度 `min(宽,92vw)` —— 窗口缩放不再溢出
 - 📄 **前端预览改名**：`widget-前端UI预览.html` → `widget-exe窗口界面.html`（改为静态展示页）
 
 ### 后端
 
+- 🔌 **提示词管理 API**：`GET /api/admin/prompts`（模板列表）、`GET /api/admin/prompts/defaults`（默认内容对照）、`PUT /api/admin/prompts/:id`（保存修改，version+1，引擎按最新版本读取即时生效）、`POST /api/admin/prompts/reset`（一键恢复全部默认）
+- 🔧 **服务端构建修复**：修复 3 处类型错误（`handlers/types.ts` 导入路径、`roles.ts` 参数类型、`game-orchestrator.ts` 投票类型收窄），`npm run build:server` 恢复通过
 - 🔧 **startServer 重构**：抽出可复用的 `startServer(options)`，Electron 与独立 Node 共用
 - 🩺 **`/api/health` 返回真实端口**；sql.js wasm 路径与 DB 路径改为**运行时解析**（支持 Electron 资源目录 / 用户数据目录）
 

@@ -2,7 +2,7 @@
 
 > A multi-LLM adversarial gaming platform — pit different AI models against each other in Werewolf (Mafia) rules, with spectators watching every game in real time from a god's-eye view.
 
-**Version**: 0.1.2 · **Stack**: TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
+**Version**: 0.1.3 · **Stack**: TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
 [中文版](README.md)
 
@@ -35,7 +35,7 @@ npm run dev:client    # frontend :5173 (another terminal)
 
 Windows scripts: `start.bat` (start) · `shutdown.bat` (shutdown) · `restart-server.bat` (restart backend)
 
-**Desktop build (Electron)**: `npm run build:electron` → produces `打包成品/electron/ai-werewolf-v0.1.2-portable-x64.exe` (single-file exe, a real desktop process; closing the window fully terminates the backend).
+**Desktop build (Electron)**: `npm run build:electron` → produces `打包成品/electron/ai-werewolf-v0.1.3-portable-x64.exe` (single-file exe, a real desktop process; closing the window fully terminates the backend).
 
 ## Usage
 
@@ -57,6 +57,12 @@ Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `
 
 > Only the latest 3 versions are shown here. Full history: [CHANGELOG.md](CHANGELOG.md)
 
+### 0.1.3 (2026-08-24)
+
+- 🧠 **Prompt manager tab**: new `/admin/prompts` — three-layer prompt architecture overview + stage×role template browse/edit (placeholder highlighting, save takes effect immediately, one-click reset to defaults) + live assembly preview; backend gains prompt read/write & reset APIs
+- 🔧 **Server build fixes**: fixed 3 type errors, `npm run build:server` passes again
+- 🖥️ **Electron desktop app**: packaged as a single-file Electron exe (real desktop process; closing the window fully exits), launcher mini-window replaces the black console (real backend status probing, small tabs)
+
 ### 0.1.2 (2026-08-01)
 
 - 🎮 **Game control fixes**: pause/resume/stop now truly work (pause freezes instantly, resume resumes correctly, stop halts immediately), aborts in-flight AI calls on stop, frontend shows a "game terminated" toast
@@ -69,15 +75,6 @@ Add roles: `server/src/engine/roles.ts` + `handlers/`; add boards: admin UI or `
 
 - 📦 **Portable build**: single-file executable, extract-and-play, no Node.js required (server serves the frontend and opens the browser automatically)
 - ⏻ **Clean exit**: red "Exit" button in the top-right of the page (saves the database before exiting), or close the black console window
-
-### 0.1.0 (2026-08-01)
-
-- 🎮 Full Werewolf rules engine: 16-phase state machine + 12 roles (Seer/Witch/Hunter/Idiot/Werewolf/Villager, incl. sheriff, last words, hunter shot, badge handover)
-- 🤖 Multi-LLM battles: each seat independently bound to an AI model, parallel scheduling + three-layer prompts + cross-game memory
-- 🗂️ Model management: one API config hosting multiple models (pull/select), one-click random assignment
-- 👁️ Admin console + spectator stand: god's-eye live view, game replays
-- 🧩 Board presets & custom roles (6/9/12 players, total-kill / faction-kill / no-sheriff variants)
-- 🔌 Compatible with any OpenAI-format API (Ollama etc., key optional)
 
 ## Disclaimer
 

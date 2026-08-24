@@ -2,7 +2,7 @@
 
 > 多 LLM 对抗博弈平台 —— 让不同 AI 模型在狼人杀规则下互相对抗，观众以「上帝视角」实时观战。
 
-**版本**：0.1.2 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
+**版本**：0.1.3 · **技术栈**：TypeScript · Fastify + Socket.IO · React + Vite + Tailwind · SQLite (sql.js)
 
 [English](README.en.md)
 
@@ -35,7 +35,7 @@ npm run dev:client    # 前端 :5173（另开终端）
 
 Windows 脚本：`start.bat`（启动）· `shutdown.bat`（关闭）· `restart-server.bat`（重启后端）
 
-**打包桌面版（Electron）**：`npm run build:electron` → 产出 `打包成品/electron/ai-werewolf-v0.1.2-portable-x64.exe`（单文件 exe，真实桌面进程，关闭窗口即完全退出后台）。
+**打包桌面版（Electron）**：`npm run build:electron` → 产出 `打包成品/electron/ai-werewolf-v0.1.3-portable-x64.exe`（单文件 exe，真实桌面进程，关闭窗口即完全退出后台）。
 
 ## 使用
 
@@ -57,6 +57,12 @@ npx vitest run     # 测试
 
 > 仅展示最近 3 个版本，完整历史见 [CHANGELOG.md](CHANGELOG.md)
 
+### 0.1.3（2026-08-24）
+
+- 🧠 **提示词管理标签页**：新增 `/admin/prompts` —— 三层提示词架构概览 + 阶段×角色模板浏览/编辑（占位符高亮、保存即生效、一键恢复默认）+ 组装演练实时预览；后端新增提示词读写/恢复默认 API
+- 🔧 **服务端构建修复**：修复 3 处类型错误，`npm run build:server` 恢复通过
+- 🖥️ **Electron 桌面版**：打包改 Electron 单文件 exe（真实桌面进程、关窗即彻底退出），启动器小窗口替代黑色控制台（真实后台状态探测、小分页标签）
+
 ### 0.1.2（2026-08-01）
 
 - 🎮 **对局控制修复**：暂停/恢复/终止真正生效（暂停立即冻结、恢复正确续跑、终止立即停死），终止时掐断进行中的 AI 请求，终止后前端弹出「对局已终止」提示
@@ -69,15 +75,6 @@ npx vitest run     # 测试
 
 - 📦 **便携打包版**：单文件 exe 解压即玩、免装 Node（服务端自动托管前端并打开浏览器）
 - ⏻ **彻底退出**：页面右上角红色「退出软件」按钮（先保存数据再退出），或关闭黑色控制台窗口
-
-### 0.1.0（2026-08-01）
-
-- 🎮 完整狼人杀规则引擎：16 阶段状态机 + 12 角色（预言家/女巫/猎人/白痴/狼人/平民，含警长、遗言、开枪、警徽移交）
-- 🤖 多 LLM 对抗：每座位独立绑定 AI 模型，并行调度 + 三层提示词 + 跨局记忆
-- 🗂️ 模型管理：一个 API 配置挂多个模型（拉取/勾选增删）、一键随机分配
-- 👁️ 运营后台 + 观战台：上帝视角实时观战、对局回放
-- 🧩 板子预设与自定义（6/9/12 人，屠城/屠边/无警长）
-- 🔌 兼容任意 OpenAI 格式 API（Ollama 等，Key 可留空）
 
 ## 免责声明
 
