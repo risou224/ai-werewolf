@@ -10,25 +10,15 @@
 
 ## 截图
 
-<p align="center">
-  <img src="docs/screenshots/spectator.png" width="860" alt="观战台（上帝视角）" title="观战台（上帝视角）"/>
-  <br/>
-  <em>观战台 · 上帝视角实时观战，昼夜氛围切换，观众视角隐藏身份</em>
-</p>
+![观战台（上帝视角）](docs/screenshots/spectator.png)
 
-<p align="center">
-  <img src="docs/screenshots/launcher.png" width="290" alt="启动器小窗口" title="启动器小窗口"/>
-  <img src="docs/screenshots/admin-models.png" width="290" alt="模型管理" title="模型管理"/>
-  <img src="docs/screenshots/admin-game.png" width="290" alt="游戏配置" title="游戏配置"/>
-  <br/>
-  <em>启动器小窗口 · 模型管理 · 游戏配置</em>
-</p>
+*观战台 · 上帝视角实时观战，昼夜氛围切换，观众视角隐藏身份*
 
-<p align="center">
-  <img src="docs/screenshots/admin-prompts.png" width="860" alt="提示词管理" title="提示词管理"/>
-  <br/>
-  <em>提示词管理 · 阶段×角色模板浏览/编辑 + 组装演练实时预览</em>
-</p>
+![启动器小窗口](docs/screenshots/launcher.png) · ![模型管理](docs/screenshots/admin-models.png) · ![游戏配置](docs/screenshots/admin-game.png)
+
+![提示词管理](docs/screenshots/admin-prompts.png)
+
+*提示词管理 · 阶段×角色模板浏览/编辑 + 组装演练实时预览*
 
 ---
 

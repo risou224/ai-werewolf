@@ -10,25 +10,15 @@
 
 ## Screenshots
 
-<p align="center">
-  <img src="docs/screenshots/spectator.png" width="860" alt="Spectator (god's-eye view)" title="Spectator (god's-eye view)"/>
-  <br/>
-  <em>Spectator · real-time god's-eye view, day/night ambience, spectator identity hidden</em>
-</p>
+![Spectator (god's-eye view)](docs/screenshots/spectator.png)
 
-<p align="center">
-  <img src="docs/screenshots/launcher.png" width="290" alt="Launcher mini-window" title="Launcher mini-window"/>
-  <img src="docs/screenshots/admin-models.png" width="290" alt="Model management" title="Model management"/>
-  <img src="docs/screenshots/admin-game.png" width="290" alt="Game config" title="Game config"/>
-  <br/>
-  <em>Launcher mini-window · Model management · Game config</em>
-</p>
+*Spectator · real-time god's-eye view, day/night ambience, spectator identity hidden*
 
-<p align="center">
-  <img src="docs/screenshots/admin-prompts.png" width="860" alt="Prompt management" title="Prompt management"/>
-  <br/>
-  <em>Prompt management · stage×role template browse/edit + live assembly preview</em>
-</p>
+![Launcher mini-window](docs/screenshots/launcher.png) · ![Model management](docs/screenshots/admin-models.png) · ![Game config](docs/screenshots/admin-game.png)
+
+![Prompt management](docs/screenshots/admin-prompts.png)
+
+*Prompt management · stage×role template browse/edit + live assembly preview*
 
 ---
 
