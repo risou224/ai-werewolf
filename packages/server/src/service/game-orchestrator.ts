@@ -133,10 +133,12 @@ export class GameOrchestrator {
         );
 
         for (const r of voteResults) {
-          if (r.status === 'fulfilled' && r.value && r.value.target !== null) {
+          if (r.status === 'fulfilled' && r.value) {
             const v = r.value;
-            voteMap.set(v.target, (voteMap.get(v.target) || 0) + 1);
-            if (v.reason) voteReasons.push(v);
+            if (v.target !== null) {
+              voteMap.set(v.target, (voteMap.get(v.target) || 0) + 1);
+              if (v.reason) voteReasons.push({ voter: v.voter, target: v.target, reason: v.reason });
+            }
           }
         }
 

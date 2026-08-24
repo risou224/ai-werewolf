@@ -6,6 +6,7 @@ import { createPlayerState, loadRoleDefs } from '../engine/roles.js';
 import { GameOrchestrator } from './game-orchestrator.js';
 import type { RoleType, PlayerState, GameSession } from '@ai-werewolf/shared';
 import { getAllBoardPresets } from '../db/seed-roles.js';
+import { seedDefaultPrompts, readDefaultPromptFiles } from '../prompts/seed.js';
 
 // 保存活跃的游戏编排器引用
 const activeGames = new Map<string, GameOrchestrator>();
@@ -313,6 +314,62 @@ export function registerAdminRoutes(app: FastifyInstance, io: SocketServer): voi
       saveDb();
       return { ok: true };
     });
+
+  // ============ 提示词管理（Layer2 阶段×角色模板，引擎 getLayer2 实时读取） ============
+  // 返回每个 (stage, role_type) 的最新版本模板 + 阶段/角色清单
+  app.get('/api/admin/prompts', async () => {
+    const db = await getDb();
+    const tplResult = db.exec(`
+      SELECT p.id, p.stage, p.role_type, p.content, p.version, p.created_at
+      FROM prompt_templates p
+      JOIN (
+        SELECT stage, role_type, MAX(version) AS maxv
+        FROM prompt_templates
+        GROUP BY stage, role_type
+      ) m ON p.stage = m.stage AND p.role_type = m.role_type AND p.version = m.maxv
+      ORDER BY p.stage, p.role_type
+    `);
+    const templates = tplResult.length === 0 ? [] : tplResult[0].values.map(row => {
+      const obj: Record<string, any> = {};
+      tplResult[0].columns.forEach((col, i) => { obj[col] = row[i]; });
+      return obj;
+    });
+    const stages = [...new Set(templates.map(t => t.stage))];
+    const roles = [...new Set(templates.map(t => t.role_type))];
+    return { stages, roles, templates };
+  });
+
+  // 返回 defaults/*.md 的默认内容（前端用来标「已修改」）
+  app.get('/api/admin/prompts/defaults', async () => {
+    const defaults: Record<string, string> = {};
+    for (const f of readDefaultPromptFiles()) defaults[f.stage] = f.content;
+    return { defaults };
+  });
+
+  // 保存模板修改：更新 content 并把 version +1（引擎按 version DESC 取最新，立即生效）
+  app.put<{ Params: { id: string }; Body: { content?: string } }>(
+    '/api/admin/prompts/:id', async (req) => {
+    const { id } = req.params;
+    const content = req.body?.content;
+    if (typeof content !== 'string' || content.trim().length === 0) {
+      return { ok: false, error: '提示词内容不能为空' };
+    }
+    const db = await getDb();
+    const stmt = db.prepare('SELECT id FROM prompt_templates WHERE id = ?');
+    stmt.bind([id]);
+    if (!stmt.step()) { stmt.free(); return { ok: false, error: '模板不存在' }; }
+    stmt.free();
+    db.run(`UPDATE prompt_templates SET content = ?, version = version + 1, created_at = datetime('now') WHERE id = ?`,
+      [content, id]);
+    saveDb();
+    return { ok: true, id };
+  });
+
+  // 一键恢复全部默认模板（与 db:init 的种子逻辑一致）
+  app.post('/api/admin/prompts/reset', async () => {
+    await seedDefaultPrompts();
+    return { ok: true };
+  });
 
   // ============ 游戏控制 ============
   app.post<{ Body: { configId: string } }>('/api/admin/game/start', async (req) => {

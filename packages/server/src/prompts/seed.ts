@@ -5,18 +5,24 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export async function seedDefaultPrompts(): Promise<void> {
-  const db = await getDb();
-
-  // 动态扫描 defaults/ 目录下的所有 .md 文件作为 stage
+/** 读取 defaults/ 目录下所有 .md 模板，返回 [{ stage, content }]（供 seed 与提示词管理 API 共用） */
+export function readDefaultPromptFiles(): Array<{ stage: string; content: string }> {
   const defaultsDir = path.join(__dirname, 'defaults');
   if (!existsSync(defaultsDir)) {
     console.warn('[seed] defaults 目录不存在，跳过');
-    return;
+    return [];
   }
-  const stages = readdirSync(defaultsDir)
+  return readdirSync(defaultsDir)
     .filter(f => f.endsWith('.md'))
-    .map(f => f.replace(/\.md$/, ''));
+    .map(f => f.replace(/\.md$/, ''))
+    .filter(stage => existsSync(path.join(defaultsDir, `${stage}.md`)))
+    .map(stage => ({ stage, content: readFileSync(path.join(defaultsDir, `${stage}.md`), 'utf-8') }));
+}
+
+export async function seedDefaultPrompts(): Promise<void> {
+  const db = await getDb();
+
+  const stages = readDefaultPromptFiles().map(f => f.stage);
 
   // 动态从 role_defs 表读取角色列表
   const roleResult = db.exec('SELECT type FROM role_defs');
@@ -28,7 +34,7 @@ export async function seedDefaultPrompts(): Promise<void> {
   let skip = 0;
 
   for (const stage of stages) {
-    const filePath = path.join(defaultsDir, `${stage}.md`);
+    const filePath = path.join(__dirname, 'defaults', `${stage}.md`);
     if (!existsSync(filePath)) continue;
     const content = readFileSync(filePath, 'utf-8');
 

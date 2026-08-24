@@ -1,4 +1,4 @@
-import type { Camp, PlayerState } from '@ai-werewolf/shared';
+import type { Camp, PlayerState, RoleType } from '@ai-werewolf/shared';
 import { getAllRoleDefs, type RoleDef } from '../db/seed-roles.js';
 
 /** 兼容用常量：硬编码兜底（DB 读不到时使用） */
@@ -52,7 +52,7 @@ export function getAlive(players: PlayerState[]): PlayerState[] {
   return players.filter(p => p.isAlive);
 }
 
-export function createPlayerState(seat: number, roleType: string): PlayerState {
+export function createPlayerState(seat: number, roleType: RoleType): PlayerState {
   const def = getRoleDefSync(roleType);
   return {
     seatNumber: seat,

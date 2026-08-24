@@ -125,5 +125,47 @@ export function useAdminAPI() {
     return res.json();
   }, []);
 
-  return { loading, error, fetchModels, createModel, updateModel, deleteModel, testConnection, testEndpoint, fetchAvailableModels, fetchProviders, createProvider, updateProvider, deleteProvider, addProviderModels };
+  // ===== 提示词管理（Layer2 阶段×角色模板） =====
+
+  const fetchPrompts = useCallback(async (): Promise<{ stages: string[]; roles: string[]; templates: any[] }> => {
+    try {
+      const res = await fetch(`${BASE}/prompts`);
+      const data = await res.json();
+      return {
+        stages: Array.isArray(data.stages) ? data.stages : [],
+        roles: Array.isArray(data.roles) ? data.roles : [],
+        templates: Array.isArray(data.templates) ? data.templates : [],
+      };
+    } catch (e: any) {
+      setError(e.message);
+      return { stages: [], roles: [], templates: [] };
+    }
+  }, []);
+
+  const fetchPromptDefaults = useCallback(async (): Promise<Record<string, string>> => {
+    try {
+      const res = await fetch(`${BASE}/prompts/defaults`);
+      const data = await res.json();
+      return (data && data.defaults) || {};
+    } catch (e: any) {
+      setError(e.message);
+      return {};
+    }
+  }, []);
+
+  const updatePrompt = useCallback(async (id: string, content: string) => {
+    const res = await fetch(`${BASE}/prompts/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    });
+    return res.json();
+  }, []);
+
+  const resetPrompts = useCallback(async () => {
+    const res = await fetch(`${BASE}/prompts/reset`, { method: 'POST' });
+    return res.json();
+  }, []);
+
+  return { loading, error, fetchModels, createModel, updateModel, deleteModel, testConnection, testEndpoint, fetchAvailableModels, fetchProviders, createProvider, updateProvider, deleteProvider, addProviderModels, fetchPrompts, fetchPromptDefaults, updatePrompt, resetPrompts };
 }

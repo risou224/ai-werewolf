@@ -3,6 +3,7 @@ import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { SpectatorView } from './pages/spectator/SpectatorView.js';
 import { ModelList } from './pages/admin/ModelList.js';
 import { GameConfigPanel } from './pages/admin/GameConfigPanel.js';
+import { PromptManager } from './pages/admin/PromptManager.js';
 import { ReplayViewer } from './pages/replay/ReplayViewer.js';
 import { UISettingsModal } from './components/UISettingsModal.js';
 
@@ -10,6 +11,7 @@ const NAV_ITEMS = [
   { path: '/', label: '观战台' },
   { path: '/admin/models', label: '模型管理' },
   { path: '/admin/game', label: '游戏配置' },
+  { path: '/admin/prompts', label: '提示词管理' },
   { path: '/replay', label: '回放' },
 ];
 
@@ -105,6 +107,7 @@ const App: React.FC = () => {
           <Route path="/" element={<SpectatorView />} />
           <Route path="/admin/models" element={<ModelList />} />
           <Route path="/admin/game" element={<GameConfigPanel />} />
+          <Route path="/admin/prompts" element={<PromptManager />} />
           <Route path="/replay" element={<ReplayViewer />} />
           <Route path="/replay/:id" element={<ReplayViewer />} />
         </Routes>

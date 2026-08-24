@@ -1,6 +1,6 @@
 import type { GameSession, GameEvent, GamePhase, PlayerState } from '@ai-werewolf/shared';
 import { Server as SocketServer } from 'socket.io';
-import type { RoleDef } from '../db/seed-roles.js';
+import type { RoleDef } from '../../db/seed-roles.js';
 
 export interface PhaseHandler {
   phase: GamePhase;
